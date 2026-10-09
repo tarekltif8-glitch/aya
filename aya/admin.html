@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة الإدارة — Aya Boutique</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;500;700;900&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--bg:#0a0a0f;--bg2:#12121a;--gold:#d4af37;--rose:#e8a5b0;--text:#f5f5f7;--muted:#8a8a96;--card:#1a1a24;--border:rgba(212,175,55,0.18)}
+body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;position:relative}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 20% 20%, rgba(212,175,55,0.08), transparent 40%),radial-gradient(circle at 80% 70%, rgba(232,165,176,0.06), transparent 45%);pointer-events:none;z-index:0}
+::-webkit-scrollbar{width:8px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--gold),var(--rose));border-radius:10px}
+
+/* LOGIN */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;position:relative;z-index:2}
+.login-box{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:40px;max-width:420px;width:100%;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,0.5)}
+.login-box .logo{font-family:'Playfair Display',serif;font-size:32px;font-weight:900;background:linear-gradient(135deg,var(--gold),var(--rose),var(--gold));background-size:200% 200%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:shine 4s ease infinite;margin-bottom:6px}
+@keyframes shine{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.login-box .sub{color:var(--muted);font-size:13px;letter-spacing:3px;margin-bottom:30px}
+.login-box h2{font-family:'Playfair Display',serif;font-size:22px;margin-bottom:20px}
+.pw-input{width:100%;padding:15px 18px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid var(--border);color:var(--text);font-family:'Cairo';font-size:16px;outline:none;transition:all 0.3s;text-align:center;letter-spacing:4px;margin-bottom:14px}
+.pw-input:focus{border-color:var(--gold);background:rgba(212,175,55,0.05)}
+.login-btn{width:100%;padding:15px;border-radius:12px;background:linear-gradient(135deg,var(--gold),#b8932a);color:#000;font-family:'Cairo';font-weight:900;font-size:16px;border:none;cursor:pointer;transition:all 0.3s}
+.login-btn:hover{transform:translateY(-2px);box-shadow:0 15px 40px rgba(212,175,55,0.4)}
+.login-error{color:#ff5c5c;font-size:13px;margin-top:12px;min-height:20px}
+.login-hint{font-size:11px;color:var(--muted);margin-top:20px;line-height:1.7}
+.login-hint code{background:rgba(212,175,55,0.1);padding:2px 6px;border-radius:6px;color:var(--gold)}
+
+/* DASHBOARD */
+.dash{display:none;position:relative;z-index:2;padding:24px}
+.dash.show{display:block}
+.dash-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px;flex-wrap:wrap;gap:16px;background:var(--card);padding:20px 24px;border-radius:20px;border:1px solid var(--border)}
+.dash-head .brand{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;background:linear-gradient(135deg,var(--gold),var(--rose));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.dash-head .actions{display:flex;gap:10px;flex-wrap:wrap}
+.admin-inner{max-width:1000px;margin:0 auto}
+.admin-tabs{display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap}
+.admin-tab{padding:10px 22px;border-radius:50px;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--muted);font-family:'Cairo';font-weight:700;cursor:pointer;transition:all 0.3s;font-size:14px}
+.admin-tab.active{background:linear-gradient(135deg,var(--gold),#b8932a);color:#000;border-color:var(--gold)}
+.admin-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:24px;margin-bottom:20px}
+.admin-card h3{font-size:18px;margin-bottom:18px;color:var(--gold)}
+.admin-input,.admin-select{width:100%;padding:12px 16px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid var(--border);color:var(--text);font-family:'Cairo';font-size:14px;outline:none;transition:all 0.3s;margin-bottom:12px}
+.admin-input:focus{border-color:var(--gold)}
+.sizes-editor{display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
+.size-row{display:grid;grid-template-columns:80px 1fr 40px;gap:10px;align-items:center}
+.size-row input{margin-bottom:0}
+.size-del{background:rgba(255,92,92,0.15);color:#ff5c5c;border:none;border-radius:10px;height:42px;cursor:pointer;font-size:18px;font-weight:900}
+.add-size-btn{background:rgba(212,175,55,0.1);border:1px dashed var(--border);color:var(--gold);padding:10px;border-radius:12px;cursor:pointer;font-family:'Cairo';font-weight:700;width:100%;margin-bottom:16px;transition:all 0.3s}
+.add-size-btn:hover{background:rgba(212,175,55,0.2)}
+.upload-area{border:2px dashed var(--border);border-radius:16px;padding:24px;text-align:center;cursor:pointer;transition:all 0.3s;margin-bottom:14px;background:rgba(212,175,55,0.03);display:block}
+.upload-area:hover{border-color:var(--gold);background:rgba(212,175,55,0.08)}
+.upload-area .icon{font-size:32px;margin-bottom:8px;color:var(--gold)}
+.upload-area p{font-size:13px;color:var(--muted);margin-bottom:4px}
+.upload-area small{font-size:11px;color:var(--gold)}
+.upload-area input{display:none}
+.img-previews{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:10px;margin-bottom:14px}
+.img-preview{aspect-ratio:3/4;border-radius:12px;overflow:hidden;position:relative;border:1px solid var(--border)}
+.img-preview img{width:100%;height:100%;object-fit:cover}
+.img-preview .del{position:absolute;top:4px;left:4px;width:22px;height:22px;border-radius:50%;background:rgba(255,92,92,0.95);color:#fff;border:none;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.img-preview .main-badge{position:absolute;bottom:4px;right:4px;background:var(--gold);color:#000;font-size:9px;font-weight:900;padding:2px 6px;border-radius:6px}
+.uploading{position:absolute;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--gold)}
+.admin-btn{padding:12px 24px;border-radius:12px;font-family:'Cairo';font-weight:700;cursor:pointer;border:none;transition:all 0.3s;font-size:14px;display:inline-flex;align-items:center;gap:6px;text-decoration:none}
+.admin-btn.primary{background:linear-gradient(135deg,var(--gold),#b8932a);color:#000}
+.admin-btn.primary:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(212,175,55,0.35)}
+.admin-btn.danger{background:rgba(255,92,92,0.15);color:#ff5c5c}
+.admin-btn.ghost{background:rgba(255,255,255,0.05);color:var(--text)}
+.admin-prod{display:flex;gap:14px;padding:14px;background:rgba(255,255,255,0.02);border-radius:14px;margin-bottom:10px;align-items:center}
+.admin-prod img{width:60px;height:75px;object-fit:cover;border-radius:10px}
+.admin-prod-info{flex:1;min-width:0}
+.admin-prod-info h4{font-size:15px;margin-bottom:4px}
+.admin-prod-info p{font-size:12px;color:var(--muted)}
+.admin-prod-actions{display:flex;gap:8px}
+.admin-prod-actions button{width:36px;height:36px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;transition:all 0.3s}
+.admin-prod-actions button:hover{background:var(--gold);color:#000}
+.hint{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.6}
+.hint code{background:rgba(212,175,55,0.1);padding:2px 6px;border-radius:6px;color:var(--gold);font-size:11px}
+.hero-img-item{position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;border:1px solid var(--border);margin-bottom:10px}
+.hero-img-item img{width:100%;height:100%;object-fit:cover}
+
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--card);border:1px solid var(--border);padding:14px 24px;border-radius:50px;color:var(--text);font-weight:700;font-size:14px;z-index:3000;transition:transform 0.5s cubic-bezier(0.68,-0.55,0.265,1.55);box-shadow:0 20px 50px rgba(0,0,0,0.5)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+@media(max-width:768px){
+  .dash{padding:14px}
+  .size-row{grid-template-columns:60px 1fr 36px}
+  .admin-tabs{overflow-x:auto;flex-wrap:nowrap}
+  .admin-tab{white-space:nowrap}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-box">
+    <div class="logo">Aya Boutique</div>
+    <div class="sub">ADMIN PANEL</div>
+    <h2>🔒 دخول الإدارة</h2>
+    <input type="password" class="pw-input" id="pwInput" placeholder="••••••••" autocomplete="off">
+    <button class="login-btn" onclick="tryLogin()">دخول</button>
+    <div class="login-error" id="loginError"></div>
+    <p class="login-hint">كلمة السر الافتراضية: <code>aya2025</code><br>لتغييرها: عدّل المتغير <code>ADMIN_PASSWORD</code> في الكود</p>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dash" id="dash">
+  <div class="dash-head">
+    <div class="brand">⚙ لوحة الإدارة — Aya Boutique</div>
+    <div class="actions">
+      <a class="admin-btn ghost" href="index.html" target="_blank">🌐 عرض الموقع</a>
+      <button class="admin-btn danger" onclick="logout()">🚪 خروج</button>
+    </div>
+  </div>
+
+  <div class="admin-inner">
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="switchTab('add',this)">➕ إضافة صنف</button>
+      <button class="admin-tab" onclick="switchTab('list',this)">📦 الأصناف</button>
+      <button class="admin-tab" onclick="switchTab('hero',this)">🖼 خلفية الرئيسية</button>
+      <button class="admin-tab" onclick="switchTab('orders',this)">📋 الطلبات</button>
+      <button class="admin-tab" onclick="switchTab('settings',this)">🔑 الإعدادات</button>
+    </div>
+
+    <!-- ADD -->
+    <div id="tab-add">
+      <div class="admin-card">
+        <h3>📸 صور الصنف (من هاتفك)</h3>
+        <label class="upload-area" id="uploadArea">
+          <div class="icon">📷</div>
+          <p>اضغط لاختيار صور من هاتفك</p>
+          <small>يتم رفعها لـ Firebase Storage</small>
+          <input type="file" accept="image/*" multiple onchange="handleProductFiles(event)">
+        </label>
+        <div class="img-previews" id="imgPreviews"></div>
+
+        <h3 style="margin-top:20px">✏ بيانات الصنف</h3>
+        <input class="admin-input" id="pName" placeholder="اسم الصنف">
+        <input class="admin-input" id="pPrice" type="number" placeholder="السعر (د.ل)">
+        <textarea class="admin-input" id="pDesc" placeholder="وصف قصير" rows="2"></textarea>
+
+        <h3 style="margin-top:20px">📏 المقاسات والكميات</h3>
+        <div class="sizes-editor" id="sizesEditor"></div>
+        <button class="add-size-btn" onclick="addSizeRow()">+ إضافة مقاس</button>
+
+        <button class="admin-btn primary" style="width:100%;margin-top:10px" onclick="saveProduct()">💾 حفظ الصنف</button>
+        <p class="hint" id="editHint" style="display:none;color:var(--gold)">✎ وضع التعديل — احفظ لتحديث الصنف</p>
+      </div>
+    </div>
+
+    <!-- LIST -->
+    <div id="tab-list" style="display:none">
+      <div class="admin-card">
+        <h3>الأصناف (<span id="prodCount">0</span>)</h3>
+        <div id="adminProductsList"><p class="hint">جاري التحميل...</p></div>
+      </div>
+    </div>
+
+    <!-- HERO -->
+    <div id="tab-hero" style="display:none">
+      <div class="admin-card">
+        <h3>🖼 خلفية الصفحة الرئيسية</h3>
+        <p class="hint" style="margin-bottom:14px">ارفع صورة من هاتفك لتظهر خلف الاسم في الصفحة الرئيسية</p>
+        <label class="upload-area">
+          <div class="icon">🖼</div>
+          <p>اختر صورة الخلفية</p>
+          <input type="file" accept="image/*" onchange="handleHeroFile(event)">
+        </label>
+        <div id="heroPreviewWrap"></div>
+        <input class="admin-input" id="heroTaglineInput" placeholder="نص تحت الاسم">
+        <button class="admin-btn primary" style="width:100%;margin-top:8px" onclick="saveHeroSettings()">💾 حفظ التغييرات</button>
+      </div>
+    </div>
+
+    <!-- ORDERS -->
+    <div id="tab-orders" style="display:none">
+      <div class="admin-card">
+        <h3>📋 سجل الطلبات (<span id="ordersCount">0</span>)</h3>
+        <div id="ordersList"><p class="hint">جاري التحميل...</p></div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div id="tab-settings" style="display:none">
+      <div class="admin-card">
+        <h3>🔑 إعدادات تيليجرام</h3>
+        <input class="admin-input" id="tgToken" placeholder="Bot Token">
+        <input class="admin-input" id="tgChatId" placeholder="Chat ID">
+        <button class="admin-btn primary" style="width:100%" onclick="saveTelegram()">💾 حفظ</button>
+        <button class="admin-btn ghost" style="width:100%;margin-top:8px" onclick="testTelegram()">🧪 اختبار الإرسال</button>
+        <p class="hint" id="tgStatus"></p>
+      </div>
+      <div class="admin-card">
+        <h3>🔒 كلمة سر الإدارة</h3>
+        <input class="admin-input" id="newPwInput" placeholder="كلمة سر جديدة (اتركها فارغة إن لم تريد التغيير)">
+        <button class="admin-btn primary" style="width:100%" onclick="changePassword()">💾 تغيير كلمة السر</button>
+        <p class="hint">كلمة السر الحالية: <code id="curPw">aya2025</code></p>
+      </div>
+      <div class="admin-card">
+        <h3>🗑 إجراءات خطيرة</h3>
+        <button class="admin-btn danger" style="width:100%;margin-bottom:8px" onclick="clearOrders()">حذف كل الطلبات</button>
+        <button class="admin-btn danger" style="width:100%" onclick="resetAll()">حذف كل الأصناف</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { db, storage } from './firebase-config.js';
+import {
+  collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc,
+  getDoc, setDoc, query, orderBy, getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import {
+  ref as storageRef, uploadBytes, getDownloadURL, deleteObject
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+/* ============================================================
+   PASSWORD
+============================================================ */
+let ADMIN_PASSWORD = 'aya2025';
+const PW_DOC = { col: 'settings', doc: 'admin' };
+
+async function loadPassword(){
+  try{
+    const snap = await getDoc(doc(db, PW_DOC.col, PW_DOC.doc));
+    if(snap.exists() && snap.data().password){
+      ADMIN_PASSWORD = snap.data().password;
+    } else {
+      // first time: store default
+      await setDoc(doc(db, PW_DOC.col, PW_DOC.doc), { password: ADMIN_PASSWORD });
+    }
+    document.getElementById('curPw').textContent = ADMIN_PASSWORD;
+  }catch(e){ console.error('load pw', e); }
+}
+await loadPassword();
+
+window.tryLogin = function(){
+  const pw = document.getElementById('pwInput').value;
+  if(pw === ADMIN_PASSWORD){
+    sessionStorage.setItem('aya_admin', 'ok');
+    document.getElementById('loginWrap').style.display = 'none';
+    document.getElementById('dash').classList.add('show');
+    initDashboard();
+  } else {
+    document.getElementById('loginError').textContent = '⚠ كلمة السر غير صحيحة';
+    document.getElementById('pwInput').value = '';
+  }
+}
+window.logout = function(){
+  sessionStorage.removeItem('aya_admin');
+  location.reload();
+}
+document.getElementById('pwInput').addEventListener('keypress', e=>{
+  if(e.key === 'Enter') tryLogin();
+});
+
+/* auto-login if session valid */
+if(sessionStorage.getItem('aya_admin') === 'ok'){
+  document.getElementById('loginWrap').style.display = 'none';
+  document.getElementById('dash').classList.add('show');
+  initDashboard();
+}
+
+/* ============================================================
+   STATE
+============================================================ */
+let products = [];
+let orders = [];
+let settings = {};
+let editingId = null;
+let imgUrls = [];
+let uploadInProgress = 0;
+
+const fmt = n => Number(n).toLocaleString('ar-LY') + ' د.ل';
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._t);
+  t._t = setTimeout(()=>t.classList.remove('show'), 2500);
+}
+
+/* ============================================================
+   INIT DASHBOARD
+============================================================ */
+function initDashboard(){
+  // Live products
+  onSnapshot(collection(db, 'products'), snap=>{
+    products = snap.docs.map(d=>({ id:d.id, ...d.data() }));
+    products.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+    renderAdminProducts();
+  });
+
+  // Live orders
+  const q = query(collection(db, 'orders'), orderBy('num', 'desc'));
+  onSnapshot(q, snap=>{
+    orders = snap.docs.map(d=>({ id:d.id, ...d.data() }));
+    renderOrders();
+  }, err=>{
+    console.error(err);
+    // fallback if no orderBy index
+    onSnapshot(collection(db, 'orders'), snap=>{
+      orders = snap.docs.map(d=>({ id:d.id, ...d.data() }));
+      orders.sort((a,b)=>(b.num||0)-(a.num||0));
+      renderOrders();
+    });
+  });
+
+  // Settings live
+  onSnapshot(doc(db, 'settings', 'site'), snap=>{
+    settings = snap.exists() ? snap.data() : {};
+    loadHeroAdmin();
+  });
+
+  // Telegram live
+  onSnapshot(doc(db, 'settings', 'telegram'), snap=>{
+    const tg = snap.exists() ? snap.data() : {};
+    document.getElementById('tgToken').value = tg.token || '';
+    document.getElementById('tgChatId').value = tg.chatId || '';
+  });
+
+  resetForm();
+}
+
+/* ============================================================
+   TABS
+============================================================ */
+window.switchTab = function(t, el){
+  document.querySelectorAll('.admin-tab').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  ['add','list','hero','orders','settings'].forEach(x=>{
+    const e = document.getElementById('tab-'+x);
+    if(e) e.style.display = x===t ? '' : 'none';
+  });
+}
+
+/* ============================================================
+   IMAGE UPLOAD
+============================================================ */
+window.handleProductFiles = async function(event){
+  const files = event.target.files;
+  if(!files || files.length === 0) return;
+
+  for(const file of Array.from(files)){
+    if(!file.type.startsWith('image/')) continue;
+    uploadInProgress++;
+    showUploadingIndicator(true);
+    try{
+      const path = `products/${Date.now()}_${file.name}`;
+      const ref = storageRef(storage, path);
+      await uploadBytes(ref, file);
+      const url = await getDownloadURL(ref);
+      imgUrls.push(url);
+      renderImgPreviews();
+    }catch(e){
+      console.error('upload', e);
+      toast('⚠ فشل رفع صورة');
+    }finally{
+      uploadInProgress--;
+      showUploadingIndicator(uploadInProgress > 0);
+    }
+  }
+  event.target.value = '';
+}
+
+function showUploadingIndicator(on){
+  const area = document.getElementById('uploadArea');
+  let el = area.querySelector('.uploading');
+  if(on && !el){
+    el = document.createElement('div');
+    el.className = 'uploading';
+    el.innerHTML = '⏳ جاري الرفع...';
+    area.appendChild(el);
+  } else if(!on && el){
+    el.remove();
+  }
+}
+
+function renderImgPreviews(){
+  document.getElementById('imgPreviews').innerHTML = imgUrls.map((u,i)=>
+    `<div class="img-preview">
+      <img src="${u}">
+      ${i===0?'<span class="main-badge">رئيسية</span>':''}
+      <button class="del" onclick="delImg(${i})">×</button>
+    </div>`
+  ).join('');
+}
+window.delImg = function(i){ imgUrls.splice(i,1); renderImgPreviews(); }
+
+/* ============================================================
+   SIZE ROWS
+============================================================ */
+window.addSizeRow = function(size='', qty=''){
+  const wrap = document.getElementById('sizesEditor');
+  const row = document.createElement('div');
+  row.className = 'size-row';
+  row.innerHTML = `
+    <input class="admin-input" placeholder="S" value="${size}" data-size>
+    <input class="admin-input" type="number" placeholder="الكمية" value="${qty}" data-qty>
+    <button class="size-del" onclick="this.parentElement.remove()">×</button>`;
+  wrap.appendChild(row);
+}
+
+/* ============================================================
+   SAVE PRODUCT
+============================================================ */
+window.saveProduct = async function(){
+  if(uploadInProgress > 0){ toast('⚠ انتظر رفع الصور'); return; }
+  const name = document.getElementById('pName').value.trim();
+  const price = Number(document.getElementById('pPrice').value);
+  const desc = document.getElementById('pDesc').value.trim();
+  if(!name || !price || imgUrls.length === 0){
+    toast('⚠ اكمل الاسم والسعر وصورة واحدة على الأقل'); return;
+  }
+  const sizes = [];
+  document.querySelectorAll('#sizesEditor .size-row').forEach(r=>{
+    const s = r.querySelector('[data-size]').value.trim();
+    const q = Number(r.querySelector('[data-qty]').value)||0;
+    if(s) sizes.push({size:s, qty:q});
+  });
+  if(sizes.length === 0){ toast('⚠ أضف مقاس واحد على الأقل'); return; }
+
+  const data = { name, price, desc, images:[...imgUrls], sizes, updatedAt: Date.now() };
+
+  try{
+    if(editingId){
+      await updateDoc(doc(db, 'products', editingId), data);
+      toast('✓ تم تحديث الصنف');
+      editingId = null;
+    } else {
+      data.createdAt = Date.now();
+      await addDoc(collection(db, 'products'), data);
+      toast('✓ تمت إضافة الصنف');
+    }
+    resetForm();
+  }catch(e){
+    console.error(e);
+    toast('⚠ فشل الحفظ');
+  }
+}
+
+function resetForm(){
+  document.getElementById('pName').value = '';
+  document.getElementById('pPrice').value = '';
+  document.getElementById('pDesc').value = '';
+  imgUrls = []; renderImgPreviews();
+  document.getElementById('sizesEditor').innerHTML = '';
+  addSizeRow('S', 5); addSizeRow('M', 5); addSizeRow('L', 3);
+  editingId = null;
+  document.getElementById('editHint').style.display = 'none';
+}
+
+/* ============================================================
+   RENDER ADMIN PRODUCTS
+============================================================ */
+function renderAdminProducts(){
+  document.getElementById('prodCount').textContent = products.length;
+  const wrap = document.getElementById('adminProductsList');
+  if(products.length === 0){
+    wrap.innerHTML = '<p class="hint">لا توجد أصناف</p>'; return;
+  }
+  wrap.innerHTML = products.map(p=>{
+    const total = p.sizes.reduce((a,s)=>a+Number(s.qty||0),0);
+    return `<div class="admin-prod">
+      <img src="${p.images[0]}" alt="">
+      <div class="admin-prod-info">
+        <h4>${p.name}</h4>
+        <p>${fmt(p.price)} — ${p.sizes.length} مقاس — إجمالي: ${total}</p>
+      </div>
+      <div class="admin-prod-actions">
+        <button onclick="editProduct('${p.id}')" title="تعديل">✏</button>
+        <button onclick="deleteProduct('${p.id}')" title="حذف">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.editProduct = function(id){
+  const p = products.find(x=>x.id===id);
+  if(!p) return;
+  editingId = id;
+  document.getElementById('pName').value = p.name;
+  document.getElementById('pPrice').value = p.price;
+  document.getElementById('pDesc').value = p.desc || '';
+  imgUrls = [...p.images]; renderImgPreviews();
+  document.getElementById('sizesEditor').innerHTML = '';
+  p.sizes.forEach(s=>addSizeRow(s.size, s.qty));
+  document.getElementById('editHint').style.display = 'block';
+  switchTab('add', document.querySelectorAll('.admin-tab')[0]);
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+window.deleteProduct = async function(id){
+  if(!confirm('تأكيد حذف الصنف؟')) return;
+  const p = products.find(x=>x.id===id);
+  // Delete images from storage
+  if(p && p.images){
+    for(const url of p.images){
+      try{ await deleteObject(storageRef(storage, url)); }catch(e){}
+    }
+  }
+  try{
+    await deleteDoc(doc(db, 'products', id));
+    toast('🗑 تم الحذف');
+  }catch(e){ toast('⚠ فشل الحذف'); }
+}
+
+/* ============================================================
+   HERO SETTINGS
+============================================================ */
+let heroTemp = '';
+window.loadHeroAdmin = function(){
+  heroTemp = settings.heroImage || '';
+  document.getElementById('heroTaglineInput').value = settings.heroTagline || '';
+  renderHeroPreview();
+}
+function renderHeroPreview(){
+  const w = document.getElementById('heroPreviewWrap');
+  if(heroTemp) w.innerHTML = `<div class="hero-img-item"><img src="${heroTemp}"></div>`;
+  else w.innerHTML = '<p class="hint">لا توجد صورة مخصصة — يتم استخدام الافتراضية</p>';
+}
+window.handleHeroFile = async function(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  try{
+    const path = `hero/${Date.now()}_${file.name}`;
+    const ref = storageRef(storage, path);
+    await uploadBytes(ref, file);
+    heroTemp = await getDownloadURL(ref);
+    renderHeroPreview();
+    toast('✓ تم رفع الصورة');
+  }catch(e){ toast('⚠ فشل الرفع'); }
+  event.target.value = '';
+}
+window.saveHeroSettings = async function(){
+  const tagline = document.getElementById('heroTaglineInput').value.trim();
+  try{
+    await setDoc(doc(db, 'settings', 'site'), {
+      heroImage: heroTemp || '',
+      heroTagline: tagline || 'فساتين فاخرة بتصاميم عصرية، مختارة بعناية لتناسب أناقتك. اكتشفي تشكيلتنا الحصرية الآن.'
+    }, { merge: true });
+    toast('✓ تم حفظ خلفية الرئيسية');
+  }catch(e){ toast('⚠ فشل الحفظ'); }
+}
+
+/* ============================================================
+   ORDERS
+============================================================ */
+function renderOrders(){
+  document.getElementById('ordersCount').textContent = orders.length;
+  const w = document.getElementById('ordersList');
+  if(orders.length === 0){
+    w.innerHTML = '<p class="hint">لا توجد طلبات بعد</p>'; return;
+  }
+  w.innerHTML = orders.map(o=>`
+    <div class="admin-prod" style="flex-direction:column;align-items:stretch;gap:10px">
+      <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;align-items:center">
+        <b style="color:var(--gold);font-size:15px">${o.id || 'AYA-'+String(o.num).padStart(5,'0')}</b>
+        <span style="font-size:11px;color:var(--muted)">${o.dateStr || ''}</span>
+        <button class="admin-btn danger" style="padding:6px 12px;font-size:12px" onclick="deleteOrder('${o.id}')">حذف</button>
+      </div>
+      <div style="font-size:13px">
+        👤 ${o.name} — 📞 ${o.phone} — 🏙 ${o.city}
+        ${o.notes?`<br>📝 ${o.notes}`:''}
+      </div>
+      <div style="font-size:12px;color:var(--muted);background:rgba(0,0,0,0.2);padding:10px;border-radius:10px">
+        ${o.items.map(it=>`• ${it.name} <b>(${it.size})</b> × ${it.qty} = ${it.qty*it.price} د.ل`).join('<br>')}
+      </div>
+      <div style="color:var(--gold);font-weight:900">الإجمالي: ${fmt(o.total)}</div>
+    </div>
+  `).join('');
+}
+window.deleteOrder = async function(id){
+  if(!confirm('حذف الطلب؟')) return;
+  try{ await deleteDoc(doc(db, 'orders', id)); toast('🗑 تم'); }
+  catch(e){ toast('⚠ فشل'); }
+}
+window.clearOrders = async function(){
+  if(!confirm('حذف كل الطلبات؟')) return;
+  try{
+    for(const o of orders){ await deleteDoc(doc(db, 'orders', o.id)); }
+    toast('🗑 تم حذف الكل');
+  }catch(e){ toast('⚠ فشل'); }
+}
+
+/* ============================================================
+   TELEGRAM
+============================================================ */
+window.saveTelegram = async function(){
+  const token = document.getElementById('tgToken').value.trim();
+  const chatId = document.getElementById('tgChatId').value.trim();
+  try{
+    await setDoc(doc(db, 'settings', 'telegram'), { token, chatId });
+    toast('✓ تم الحفظ');
+  }catch(e){ toast('⚠ فشل'); }
+}
+window.testTelegram = async function(){
+  const token = document.getElementById('tgToken').value.trim();
+  const chatId = document.getElementById('tgChatId').value.trim();
+  const st = document.getElementById('tgStatus');
+  if(!token || !chatId){ st.textContent = '⚠ املأ البيانات'; return; }
+  st.textContent = '⏳ جاري الإرسال...';
+  try{
+    const r = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({chat_id: chatId, text:'✅ اختبار ناجح من Aya Boutique'})
+    });
+    const d = await r.json();
+    st.textContent = d.ok ? '✓ تم الإرسال بنجاح' : '⚠ فشل: ' + (d.description||'');
+  }catch(e){ st.textContent = '⚠ خطأ اتصال'; }
+}
+
+/* ============================================================
+   PASSWORD CHANGE
+============================================================ */
+window.changePassword = async function(){
+  const np = document.getElementById('newPwInput').value.trim();
+  if(!np || np.length < 4){ toast('⚠ كلمة السر قصيرة (4 أحرف على الأقل)'); return; }
+  try{
+    await setDoc(doc(db, 'settings', 'admin'), { password: np });
+    ADMIN_PASSWORD = np;
+    document.getElementById('curPw').textContent = np;
+    document.getElementById('newPwInput').value = '';
+    toast('✓ تم تغيير كلمة السر');
+  }catch(e){ toast('⚠ فشل'); }
+}
+
+/* ============================================================
+   RESET ALL
+============================================================ */
+window.resetAll = async function(){
+  if(!confirm('حذف كل الأصناف؟ لا يمكن التراجع!')) return;
+  try{
+    for(const p of products){
+      if(p.images){
+        for(const url of p.images){
+          try{ await deleteObject(storageRef(storage, url)); }catch(e){}
+        }
+      }
+      await deleteDoc(doc(db, 'products', p.id));
+    }
+    toast('🗑 تم حذف الكل');
+  }catch(e){ toast('⚠ فشل'); }
+}
+
+</script>
+</body>
+</html>
