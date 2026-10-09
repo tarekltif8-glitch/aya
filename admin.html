@@ -14,22 +14,20 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
 ::-webkit-scrollbar-track{background:var(--bg2)}
 ::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--gold),var(--rose));border-radius:10px}
 
-/* LOGIN */
 .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;position:relative;z-index:2}
 .login-box{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:40px;max-width:420px;width:100%;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,0.5)}
 .login-box .logo{font-family:'Playfair Display',serif;font-size:32px;font-weight:900;background:linear-gradient(135deg,var(--gold),var(--rose),var(--gold));background-size:200% 200%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:shine 4s ease infinite;margin-bottom:6px}
 @keyframes shine{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
 .login-box .sub{color:var(--muted);font-size:13px;letter-spacing:3px;margin-bottom:30px}
 .login-box h2{font-family:'Playfair Display',serif;font-size:22px;margin-bottom:20px}
-.pw-input{width:100%;padding:15px 18px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid var(--border);color:var(--text);font-family:'Cairo';font-size:16px;outline:none;transition:all 0.3s;text-align:center;letter-spacing:4px;margin-bottom:14px}
+.pw-input{width:100%;padding:15px 18px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid var(--border);color:var(--text);font-family:'Cairo';font-size:16px;outline:none;transition:all 0.3s;text-align:center;letter-spacing:6px;margin-bottom:14px}
 .pw-input:focus{border-color:var(--gold);background:rgba(212,175,55,0.05)}
 .login-btn{width:100%;padding:15px;border-radius:12px;background:linear-gradient(135deg,var(--gold),#b8932a);color:#000;font-family:'Cairo';font-weight:900;font-size:16px;border:none;cursor:pointer;transition:all 0.3s}
 .login-btn:hover{transform:translateY(-2px);box-shadow:0 15px 40px rgba(212,175,55,0.4)}
 .login-error{color:#ff5c5c;font-size:13px;margin-top:12px;min-height:20px}
-.login-hint{font-size:11px;color:var(--muted);margin-top:20px;line-height:1.7}
-.login-hint code{background:rgba(212,175,55,0.1);padding:2px 6px;border-radius:6px;color:var(--gold)}
+.login-hint{font-size:12px;color:var(--muted);margin-top:20px;line-height:1.7}
+.login-hint code{background:rgba(212,175,55,0.1);padding:2px 8px;border-radius:6px;color:var(--gold);font-size:13px;font-weight:700}
 
-/* DASHBOARD */
 .dash{display:none;position:relative;z-index:2;padding:24px}
 .dash.show{display:block}
 .dash-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px;flex-wrap:wrap;gap:16px;background:var(--card);padding:20px 24px;border-radius:20px;border:1px solid var(--border)}
@@ -49,7 +47,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
 .size-del{background:rgba(255,92,92,0.15);color:#ff5c5c;border:none;border-radius:10px;height:42px;cursor:pointer;font-size:18px;font-weight:900}
 .add-size-btn{background:rgba(212,175,55,0.1);border:1px dashed var(--border);color:var(--gold);padding:10px;border-radius:12px;cursor:pointer;font-family:'Cairo';font-weight:700;width:100%;margin-bottom:16px;transition:all 0.3s}
 .add-size-btn:hover{background:rgba(212,175,55,0.2)}
-.upload-area{border:2px dashed var(--border);border-radius:16px;padding:24px;text-align:center;cursor:pointer;transition:all 0.3s;margin-bottom:14px;background:rgba(212,175,55,0.03);display:block}
+.upload-area{border:2px dashed var(--border);border-radius:16px;padding:24px;text-align:center;cursor:pointer;transition:all 0.3s;margin-bottom:14px;background:rgba(212,175,55,0.03);display:block;position:relative}
 .upload-area:hover{border-color:var(--gold);background:rgba(212,175,55,0.08)}
 .upload-area .icon{font-size:32px;margin-bottom:8px;color:var(--gold)}
 .upload-area p{font-size:13px;color:var(--muted);margin-bottom:4px}
@@ -60,7 +58,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
 .img-preview img{width:100%;height:100%;object-fit:cover}
 .img-preview .del{position:absolute;top:4px;left:4px;width:22px;height:22px;border-radius:50%;background:rgba(255,92,92,0.95);color:#fff;border:none;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .img-preview .main-badge{position:absolute;bottom:4px;right:4px;background:var(--gold);color:#000;font-size:9px;font-weight:900;padding:2px 6px;border-radius:6px}
-.uploading{position:absolute;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--gold)}
+.uploading{position:absolute;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--gold);border-radius:16px}
 .admin-btn{padding:12px 24px;border-radius:12px;font-family:'Cairo';font-weight:700;cursor:pointer;border:none;transition:all 0.3s;font-size:14px;display:inline-flex;align-items:center;gap:6px;text-decoration:none}
 .admin-btn.primary{background:linear-gradient(135deg,var(--gold),#b8932a);color:#000}
 .admin-btn.primary:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(212,175,55,0.35)}
@@ -78,6 +76,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
 .hint code{background:rgba(212,175,55,0.1);padding:2px 6px;border-radius:6px;color:var(--gold);font-size:11px}
 .hero-img-item{position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;border:1px solid var(--border);margin-bottom:10px}
 .hero-img-item img{width:100%;height:100%;object-fit:cover}
+.banner-warn{background:rgba(255,92,92,0.1);border:1px solid rgba(255,92,92,0.3);color:#ff8f8f;padding:14px;border-radius:12px;font-size:13px;margin-bottom:16px;line-height:1.7}
+.banner-warn b{color:#ff5c5c}
 
 .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--card);border:1px solid var(--border);padding:14px 24px;border-radius:50px;color:var(--text);font-weight:700;font-size:14px;z-index:3000;transition:transform 0.5s cubic-bezier(0.68,-0.55,0.265,1.55);box-shadow:0 20px 50px rgba(0,0,0,0.5)}
 .toast.show{transform:translateX(-50%) translateY(0)}
@@ -85,27 +85,25 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
 @media(max-width:768px){
   .dash{padding:14px}
   .size-row{grid-template-columns:60px 1fr 36px}
-  .admin-tabs{overflow-x:auto;flex-wrap:nowrap}
+  .admin-tabs{overflow-x:auto;flex-wrap:nowrap;padding-bottom:6px}
   .admin-tab{white-space:nowrap}
 }
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
 <div class="login-wrap" id="loginWrap">
   <div class="login-box">
     <div class="logo">Aya Boutique</div>
     <div class="sub">ADMIN PANEL</div>
     <h2>🔒 دخول الإدارة</h2>
-    <input type="password" class="pw-input" id="pwInput" placeholder="••••••••" autocomplete="off">
+    <input type="password" class="pw-input" id="pwInput" placeholder="• • • • •" autocomplete="off" inputmode="numeric">
     <button class="login-btn" onclick="tryLogin()">دخول</button>
     <div class="login-error" id="loginError"></div>
-    <p class="login-hint">كلمة السر الافتراضية: <code>aya2025</code><br>لتغييرها: عدّل المتغير <code>ADMIN_PASSWORD</code> في الكود</p>
+    <p class="login-hint">كلمة السر الافتراضية: <code>12345</code><br>يمكنك تغييرها من داخل الإدارة → الإعدادات</p>
   </div>
 </div>
 
-<!-- DASHBOARD -->
 <div class="dash" id="dash">
   <div class="dash-head">
     <div class="brand">⚙ لوحة الإدارة — Aya Boutique</div>
@@ -116,6 +114,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
   </div>
 
   <div class="admin-inner">
+    <div id="fbWarn" style="display:none" class="banner-warn">
+      ⚠ <b>Firebase غير متصل!</b> تأكد من تفعيل Firestore وStorage وضبط قواعد الأمان في Firebase Console.
+    </div>
+
     <div class="admin-tabs">
       <button class="admin-tab active" onclick="switchTab('add',this)">➕ إضافة صنف</button>
       <button class="admin-tab" onclick="switchTab('list',this)">📦 الأصناف</button>
@@ -124,7 +126,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
       <button class="admin-tab" onclick="switchTab('settings',this)">🔑 الإعدادات</button>
     </div>
 
-    <!-- ADD -->
     <div id="tab-add">
       <div class="admin-card">
         <h3>📸 صور الصنف (من هاتفك)</h3>
@@ -150,7 +151,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
       </div>
     </div>
 
-    <!-- LIST -->
     <div id="tab-list" style="display:none">
       <div class="admin-card">
         <h3>الأصناف (<span id="prodCount">0</span>)</h3>
@@ -158,7 +158,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
       </div>
     </div>
 
-    <!-- HERO -->
     <div id="tab-hero" style="display:none">
       <div class="admin-card">
         <h3>🖼 خلفية الصفحة الرئيسية</h3>
@@ -174,7 +173,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
       </div>
     </div>
 
-    <!-- ORDERS -->
     <div id="tab-orders" style="display:none">
       <div class="admin-card">
         <h3>📋 سجل الطلبات (<span id="ordersCount">0</span>)</h3>
@@ -182,7 +180,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
       </div>
     </div>
 
-    <!-- SETTINGS -->
     <div id="tab-settings" style="display:none">
       <div class="admin-card">
         <h3>🔑 إعدادات تيليجرام</h3>
@@ -194,9 +191,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
       </div>
       <div class="admin-card">
         <h3>🔒 كلمة سر الإدارة</h3>
-        <input class="admin-input" id="newPwInput" placeholder="كلمة سر جديدة (اتركها فارغة إن لم تريد التغيير)">
+        <p class="hint" style="margin-bottom:12px">كلمة السر الحالية: <code id="curPw">12345</code></p>
+        <input class="admin-input" id="curPwInput" placeholder="كلمة السر الحالية" type="password">
+        <input class="admin-input" id="newPwInput" placeholder="كلمة السر الجديدة" type="password">
+        <input class="admin-input" id="newPwInput2" placeholder="تأكيد كلمة السر الجديدة" type="password">
         <button class="admin-btn primary" style="width:100%" onclick="changePassword()">💾 تغيير كلمة السر</button>
-        <p class="hint">كلمة السر الحالية: <code id="curPw">aya2025</code></p>
       </div>
       <div class="admin-card">
         <h3>🗑 إجراءات خطيرة</h3>
@@ -213,34 +212,38 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
 import { db, storage } from './firebase-config.js';
 import {
   collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc,
-  getDoc, setDoc, query, orderBy, getDocs
+  getDoc, setDoc, query, orderBy
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import {
   ref as storageRef, uploadBytes, getDownloadURL, deleteObject
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
 /* ============================================================
-   PASSWORD
+   PASSWORD (default 12345, stored in Firebase)
 ============================================================ */
-let ADMIN_PASSWORD = 'aya2025';
-const PW_DOC = { col: 'settings', doc: 'admin' };
+const DEFAULT_PASSWORD = '12345';
+let ADMIN_PASSWORD = DEFAULT_PASSWORD;
 
 async function loadPassword(){
   try{
-    const snap = await getDoc(doc(db, PW_DOC.col, PW_DOC.doc));
+    const snap = await getDoc(doc(db, 'settings', 'admin'));
     if(snap.exists() && snap.data().password){
       ADMIN_PASSWORD = snap.data().password;
     } else {
-      // first time: store default
-      await setDoc(doc(db, PW_DOC.col, PW_DOC.doc), { password: ADMIN_PASSWORD });
+      await setDoc(doc(db, 'settings', 'admin'), { password: DEFAULT_PASSWORD });
+      ADMIN_PASSWORD = DEFAULT_PASSWORD;
     }
     document.getElementById('curPw').textContent = ADMIN_PASSWORD;
-  }catch(e){ console.error('load pw', e); }
+  }catch(e){
+    console.warn('password load failed, using default', e);
+    ADMIN_PASSWORD = DEFAULT_PASSWORD;
+    document.getElementById('curPw').textContent = DEFAULT_PASSWORD;
+  }
 }
 await loadPassword();
 
 window.tryLogin = function(){
-  const pw = document.getElementById('pwInput').value;
+  const pw = document.getElementById('pwInput').value.trim();
   if(pw === ADMIN_PASSWORD){
     sessionStorage.setItem('aya_admin', 'ok');
     document.getElementById('loginWrap').style.display = 'none';
@@ -259,7 +262,6 @@ document.getElementById('pwInput').addEventListener('keypress', e=>{
   if(e.key === 'Enter') tryLogin();
 });
 
-/* auto-login if session valid */
 if(sessionStorage.getItem('aya_admin') === 'ok'){
   document.getElementById('loginWrap').style.display = 'none';
   document.getElementById('dash').classList.add('show');
@@ -289,46 +291,55 @@ function toast(msg){
 ============================================================ */
 function initDashboard(){
   // Live products
-  onSnapshot(collection(db, 'products'), snap=>{
-    products = snap.docs.map(d=>({ id:d.id, ...d.data() }));
-    products.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
-    renderAdminProducts();
-  });
+  onSnapshot(collection(db, 'products'),
+    snap=>{
+      document.getElementById('fbWarn').style.display = 'none';
+      products = snap.docs.map(d=>({ id:d.id, ...d.data() }));
+      products.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+      renderAdminProducts();
+    },
+    err=>{
+      console.error('products', err);
+      document.getElementById('fbWarn').style.display = 'block';
+      document.getElementById('adminProductsList').innerHTML = '<p class="hint" style="color:#ff5c5c">⚠ تعذّر الاتصال بـ Firebase — راجع القواعد</p>';
+    }
+  );
 
   // Live orders
-  const q = query(collection(db, 'orders'), orderBy('num', 'desc'));
-  onSnapshot(q, snap=>{
-    orders = snap.docs.map(d=>({ id:d.id, ...d.data() }));
-    renderOrders();
-  }, err=>{
-    console.error(err);
-    // fallback if no orderBy index
-    onSnapshot(collection(db, 'orders'), snap=>{
+  onSnapshot(collection(db, 'orders'),
+    snap=>{
       orders = snap.docs.map(d=>({ id:d.id, ...d.data() }));
       orders.sort((a,b)=>(b.num||0)-(a.num||0));
       renderOrders();
-    });
-  });
+    },
+    err=>{
+      console.error('orders', err);
+      document.getElementById('ordersList').innerHTML = '<p class="hint" style="color:#ff5c5c">⚠ تعذّر الاتصال</p>';
+    }
+  );
 
-  // Settings live
-  onSnapshot(doc(db, 'settings', 'site'), snap=>{
-    settings = snap.exists() ? snap.data() : {};
-    loadHeroAdmin();
-  });
+  // Settings
+  onSnapshot(doc(db, 'settings', 'site'),
+    snap=>{
+      settings = snap.exists() ? snap.data() : {};
+      loadHeroAdmin();
+    },
+    err=>console.warn('settings', err)
+  );
 
-  // Telegram live
-  onSnapshot(doc(db, 'settings', 'telegram'), snap=>{
-    const tg = snap.exists() ? snap.data() : {};
-    document.getElementById('tgToken').value = tg.token || '';
-    document.getElementById('tgChatId').value = tg.chatId || '';
-  });
+  // Telegram
+  onSnapshot(doc(db, 'settings', 'telegram'),
+    snap=>{
+      const tg = snap.exists() ? snap.data() : {};
+      document.getElementById('tgToken').value = tg.token || '';
+      document.getElementById('tgChatId').value = tg.chatId || '';
+    },
+    err=>console.warn('telegram', err)
+  );
 
   resetForm();
 }
 
-/* ============================================================
-   TABS
-============================================================ */
 window.switchTab = function(t, el){
   document.querySelectorAll('.admin-tab').forEach(b=>b.classList.remove('active'));
   el.classList.add('active');
@@ -350,7 +361,7 @@ window.handleProductFiles = async function(event){
     uploadInProgress++;
     showUploadingIndicator(true);
     try{
-      const path = `products/${Date.now()}_${file.name}`;
+      const path = `products/${Date.now()}_${file.name.replace(/[^\w.-]/g,'_')}`;
       const ref = storageRef(storage, path);
       await uploadBytes(ref, file);
       const url = await getDownloadURL(ref);
@@ -439,7 +450,7 @@ window.saveProduct = async function(){
     resetForm();
   }catch(e){
     console.error(e);
-    toast('⚠ فشل الحفظ');
+    toast('⚠ فشل الحفظ — راجع Firebase Rules');
   }
 }
 
@@ -454,22 +465,21 @@ function resetForm(){
   document.getElementById('editHint').style.display = 'none';
 }
 
-/* ============================================================
-   RENDER ADMIN PRODUCTS
-============================================================ */
 function renderAdminProducts(){
   document.getElementById('prodCount').textContent = products.length;
   const wrap = document.getElementById('adminProductsList');
   if(products.length === 0){
-    wrap.innerHTML = '<p class="hint">لا توجد أصناف</p>'; return;
+    wrap.innerHTML = '<p class="hint">لا توجد أصناف — أضف أول صنف من تبويب "إضافة صنف"</p>'; return;
   }
   wrap.innerHTML = products.map(p=>{
-    const total = p.sizes.reduce((a,s)=>a+Number(s.qty||0),0);
+    const sizes = p.sizes || [];
+    const total = sizes.reduce((a,s)=>a+Number(s.qty||0),0);
+    const img = (p.images && p.images[0]) || '';
     return `<div class="admin-prod">
-      <img src="${p.images[0]}" alt="">
+      <img src="${img}" alt="">
       <div class="admin-prod-info">
         <h4>${p.name}</h4>
-        <p>${fmt(p.price)} — ${p.sizes.length} مقاس — إجمالي: ${total}</p>
+        <p>${fmt(p.price)} — ${sizes.length} مقاس — إجمالي: ${total}</p>
       </div>
       <div class="admin-prod-actions">
         <button onclick="editProduct('${p.id}')" title="تعديل">✏</button>
@@ -486,9 +496,9 @@ window.editProduct = function(id){
   document.getElementById('pName').value = p.name;
   document.getElementById('pPrice').value = p.price;
   document.getElementById('pDesc').value = p.desc || '';
-  imgUrls = [...p.images]; renderImgPreviews();
+  imgUrls = [...(p.images||[])]; renderImgPreviews();
   document.getElementById('sizesEditor').innerHTML = '';
-  p.sizes.forEach(s=>addSizeRow(s.size, s.qty));
+  (p.sizes||[]).forEach(s=>addSizeRow(s.size, s.qty));
   document.getElementById('editHint').style.display = 'block';
   switchTab('add', document.querySelectorAll('.admin-tab')[0]);
   window.scrollTo({top:0, behavior:'smooth'});
@@ -497,7 +507,6 @@ window.editProduct = function(id){
 window.deleteProduct = async function(id){
   if(!confirm('تأكيد حذف الصنف؟')) return;
   const p = products.find(x=>x.id===id);
-  // Delete images from storage
   if(p && p.images){
     for(const url of p.images){
       try{ await deleteObject(storageRef(storage, url)); }catch(e){}
@@ -527,7 +536,7 @@ window.handleHeroFile = async function(event){
   const file = event.target.files[0];
   if(!file) return;
   try{
-    const path = `hero/${Date.now()}_${file.name}`;
+    const path = `hero/${Date.now()}_${file.name.replace(/[^\w.-]/g,'_')}`;
     const ref = storageRef(storage, path);
     await uploadBytes(ref, file);
     heroTemp = await getDownloadURL(ref);
@@ -559,7 +568,7 @@ function renderOrders(){
   w.innerHTML = orders.map(o=>`
     <div class="admin-prod" style="flex-direction:column;align-items:stretch;gap:10px">
       <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;align-items:center">
-        <b style="color:var(--gold);font-size:15px">${o.id || 'AYA-'+String(o.num).padStart(5,'0')}</b>
+        <b style="color:var(--gold);font-size:15px">${o.id || 'AYA-'+String(o.num||0).padStart(5,'0')}</b>
         <span style="font-size:11px;color:var(--muted)">${o.dateStr || ''}</span>
         <button class="admin-btn danger" style="padding:6px 12px;font-size:12px" onclick="deleteOrder('${o.id}')">حذف</button>
       </div>
@@ -568,9 +577,9 @@ function renderOrders(){
         ${o.notes?`<br>📝 ${o.notes}`:''}
       </div>
       <div style="font-size:12px;color:var(--muted);background:rgba(0,0,0,0.2);padding:10px;border-radius:10px">
-        ${o.items.map(it=>`• ${it.name} <b>(${it.size})</b> × ${it.qty} = ${it.qty*it.price} د.ل`).join('<br>')}
+        ${(o.items||[]).map(it=>`• ${it.name} <b>(${it.size})</b> × ${it.qty} = ${it.qty*it.price} د.ل`).join('<br>')}
       </div>
-      <div style="color:var(--gold);font-weight:900">الإجمالي: ${fmt(o.total)}</div>
+      <div style="color:var(--gold);font-weight:900">الإجمالي: ${fmt(o.total||0)}</div>
     </div>
   `).join('');
 }
@@ -618,15 +627,21 @@ window.testTelegram = async function(){
    PASSWORD CHANGE
 ============================================================ */
 window.changePassword = async function(){
+  const cur = document.getElementById('curPwInput').value.trim();
   const np = document.getElementById('newPwInput').value.trim();
-  if(!np || np.length < 4){ toast('⚠ كلمة السر قصيرة (4 أحرف على الأقل)'); return; }
+  const np2 = document.getElementById('newPwInput2').value.trim();
+  if(cur !== ADMIN_PASSWORD){ toast('⚠ كلمة السر الحالية غير صحيحة'); return; }
+  if(!np || np.length < 4){ toast('⚠ كلمة السر الجديدة قصيرة (4+ أحرف)'); return; }
+  if(np !== np2){ toast('⚠ كلمتا السر غير متطابقتين'); return; }
   try{
     await setDoc(doc(db, 'settings', 'admin'), { password: np });
     ADMIN_PASSWORD = np;
     document.getElementById('curPw').textContent = np;
+    document.getElementById('curPwInput').value = '';
     document.getElementById('newPwInput').value = '';
+    document.getElementById('newPwInput2').value = '';
     toast('✓ تم تغيير كلمة السر');
-  }catch(e){ toast('⚠ فشل'); }
+  }catch(e){ toast('⚠ فشل التغيير'); }
 }
 
 /* ============================================================
