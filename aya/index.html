@@ -224,7 +224,7 @@ footer .brand{font-family:'Playfair Display',serif;font-size:24px;margin-bottom:
 </nav>
 
 <section class="hero" id="heroSection">
-  <div class="hero-bg" id="heroBg"><img id="heroBgImg" src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1600" alt=""></div>
+  <div class="hero-bg"><img id="heroBgImg" src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1600" alt=""></div>
   <div class="hero-badge">✦ تشكيلة 2025 الجديدة ✦</div>
   <h1><span class="word">Aya</span> <span class="word">Boutique</span></h1>
   <p id="heroTagline">فساتين فاخرة بتصاميم عصرية، مختارة بعناية لتناسب أناقتك. اكتشفي تشكيلتنا الحصرية الآن.</p>
@@ -325,9 +325,9 @@ footer .brand{font-family:'Playfair Display',serif;font-size:24px;margin-bottom:
 
 <script type="module">
 import { db } from './firebase-config.js';
+import { getImages } from './images-catalog.js';
 import {
-  collection, onSnapshot, query, orderBy, doc,
-  updateDoc, addDoc, getDoc, setDoc, increment
+  collection, onSnapshot, doc, addDoc, updateDoc, getDoc, setDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 /* ============================================================
@@ -342,6 +342,7 @@ let sliderTimer = null;
 let currentSize = null;
 let currentQty = 1;
 let pendingCartAdd = null;
+let firebaseReady = false;
 
 /* ============================================================
    HELPERS
@@ -386,62 +387,70 @@ addEventListener('scroll', ()=>{
 });
 
 /* ============================================================
-   FIREBASE LIVE LISTENERS
+   LOAD PRODUCTS FROM FIREBASE
 ============================================================ */
-// Products live
-onSnapshot(collection(db, 'products'), snap=>{
-  products = snap.docs.map(d=>({ id:d.id, ...d.data() }));
-  products.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
-  renderProducts();
-});
-
-// Settings live
-onSnapshot(doc(db, 'settings', 'site'), snap=>{
-  if(snap.exists()){
-    settings = { ...settings, ...snap.data() };
+onSnapshot(collection(db, 'products'),
+  snap=>{
+    document.getElementById('productsLoader').style.display = 'none';
+    products = snap.docs.map(d=>({ id:d.id, ...d.data() }));
+    products.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+    renderProducts();
+  },
+  err=>{
+    console.warn('Firestore error', err);
+    document.getElementById('productsLoader').style.display = 'none';
+    document.getElementById('productsGrid').innerHTML = `
+      <p style="grid-column:1/-1;text-align:center;color:#ff5c5c;padding:60px">
+        ⚠ تعذّر تحميل الأصناف — راجع Firebase Rules
+      </p>`;
   }
-  applySettings();
-});
+);
+
+// Settings
+onSnapshot(doc(db, 'settings', 'site'),
+  snap=>{
+    if(snap.exists()){ settings = { ...settings, ...snap.data() }; applySettings(); }
+  }
+);
 
 function applySettings(){
-  if(settings.heroImage){
-    document.getElementById('heroBgImg').src = settings.heroImage;
-  }
-  if(settings.heroTagline){
-    document.getElementById('heroTagline').textContent = settings.heroTagline;
-  }
+  if(settings.heroImage) document.getElementById('heroBgImg').src = settings.heroImage;
+  if(settings.heroTagline) document.getElementById('heroTagline').textContent = settings.heroTagline;
 }
 
 /* ============================================================
-   PRODUCTS RENDER
+   RENDER PRODUCTS
 ============================================================ */
 const io = new IntersectionObserver(es=>{
   es.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); });
 }, {threshold:0.12});
 
 function renderProducts(){
-  const loader = document.getElementById('productsLoader');
-  if(loader) loader.style.display = 'none';
   const grid = document.getElementById('productsGrid');
   grid.innerHTML = '';
   if(products.length === 0){
-    grid.innerHTML = `<p style="grid-column:1/-1;text-align:center;color:var(--muted);padding:60px">لا توجد أصناف بعد</p>`;
+    grid.innerHTML = `<p style="grid-column:1/-1;text-align:center;color:var(--muted);padding:60px">لا توجد أصناف بعد — أضف أصناف من لوحة الإدارة</p>`;
     return;
   }
   products.forEach((p, i)=>{
-    const total = p.sizes.reduce((a,s)=>a+Number(s.qty||0),0);
+    // 🎯 جلب الصور من مكتبة الصور
+    const images = getImages(p.imageKey, p.imageCount || 1);
+    const coverImg = images[0] || 'https://via.placeholder.com/600x800/1a1a24/d4af37?text=No+Image';
+    const sizes = p.sizes || [];
+    const total = sizes.reduce((a,s)=>a+Number(s.qty||0),0);
+
     const card = document.createElement('div');
     card.className = 'product-card';
     card.style.transitionDelay = (i*0.08)+'s';
     card.innerHTML = `
       <div class="product-img-wrap">
-        <img src="${p.images[0]}" alt="${p.name}" onload="this.classList.add('loaded')" onerror="this.style.opacity=0.2">
+        <img src="${coverImg}" alt="${p.name}" onload="this.classList.add('loaded')" onerror="this.style.opacity=0.2">
         <div class="product-tag ${total===0?'out':''}">${total===0?'نفذت الكمية':'متوفر'}</div>
       </div>
       <div class="product-info">
         <h3>${p.name}</h3>
         <div class="price">${fmt(p.price)}</div>
-        <div class="sizes-mini">${p.sizes.map(s=>`<span class="size-mini ${s.qty<=0?'disabled':''}">${s.size}</span>`).join('')}</div>
+        <div class="sizes-mini">${sizes.map(s=>`<span class="size-mini ${s.qty<=0?'disabled':''}">${s.size}</span>`).join('')}</div>
       </div>`;
     card.onclick = ()=>openProduct(p.id);
     grid.appendChild(card);
@@ -453,17 +462,21 @@ function renderProducts(){
    PRODUCT MODAL
 ============================================================ */
 window.openProduct = function(id){
-  currentProduct = products.find(p=>p.id===id);
+  currentProduct = products.find(p=>String(p.id)===String(id));
   if(!currentProduct) return;
   currentSlide = 0; currentSize = null; currentQty = 1;
 
+  // 🎯 جلب الصور من مكتبة الصور
+  const images = getImages(currentProduct.imageKey, currentProduct.imageCount || 1);
+  const imgs = images.length > 0 ? images : ['https://via.placeholder.com/600x800/1a1a24/d4af37?text=No+Image'];
+
   const slides = document.getElementById('slides');
-  slides.innerHTML = currentProduct.images.map((img,i)=>
+  slides.innerHTML = imgs.map((img,i)=>
     `<div class="slide ${i===0?'active':''}"><div class="slide-zoom"><img src="${img}" alt=""></div></div>`
   ).join('');
   slides.style.transform = 'translateX(0)';
 
-  document.getElementById('sliderDots').innerHTML = currentProduct.images.map((_,i)=>
+  document.getElementById('sliderDots').innerHTML = imgs.map((_,i)=>
     `<span class="${i===0?'active':''}" onclick="goSlide(${i})"></span>`
   ).join('');
 
@@ -475,7 +488,7 @@ window.openProduct = function(id){
     <div>
       <div class="size-label">المقاس</div>
       <div class="sizes" id="sizeBtns">
-        ${currentProduct.sizes.map(s=>`
+        ${(currentProduct.sizes||[]).map(s=>`
           <button class="size-btn ${s.qty<=0?'disabled':''}" data-size="${s.size}" onclick="selectSize('${s.size}')">
             ${s.size}${s.qty>0?`<span class="qty-badge">${s.qty}</span>`:''}
           </button>
@@ -505,7 +518,8 @@ window.closeProductModal = function(){
 }
 window.goSlide = function(i){
   if(!currentProduct) return;
-  const n = currentProduct.images.length;
+  const images = getImages(currentProduct.imageKey, currentProduct.imageCount || 1);
+  const n = images.length || 1;
   currentSlide = (i+n)%n;
   document.getElementById('slides').style.transform = `translateX(-${currentSlide*100}%)`;
   document.querySelectorAll('#sliderDots span').forEach((d,idx)=>d.classList.toggle('active', idx===currentSlide));
@@ -519,13 +533,13 @@ window.goSlide = function(i){
 }
 function startSlider(){
   stopSlider();
-  if(currentProduct && currentProduct.images.length > 1){
+  const images = currentProduct ? getImages(currentProduct.imageKey, currentProduct.imageCount || 1) : [];
+  if(images.length > 1){
     sliderTimer = setInterval(()=>goSlide(currentSlide+1), 3500);
   }
 }
 function stopSlider(){ if(sliderTimer){clearInterval(sliderTimer); sliderTimer=null;} }
 
-/* swipe */
 (function(){
   let sx=0, sy=0, dragging=false;
   const el = document.getElementById('slider');
@@ -536,9 +550,7 @@ function stopSlider(){ if(sliderTimer){clearInterval(sliderTimer); sliderTimer=n
     if(!dragging) return; dragging=false;
     const dx = e.changedTouches[0].clientX - sx;
     const dy = e.changedTouches[0].clientY - sy;
-    if(Math.abs(dx)>50 && Math.abs(dx)>Math.abs(dy)){
-      goSlide(currentSlide + (dx<0?1:-1));
-    }
+    if(Math.abs(dx)>50 && Math.abs(dx)>Math.abs(dy)) goSlide(currentSlide + (dx<0?1:-1));
     startSlider();
   });
   let mdown=false, mx=0;
@@ -577,13 +589,14 @@ window.changeQty = function(delta){
 ============================================================ */
 window.addToCart = function(){
   if(!currentSize || !currentProduct) return;
+  const images = getImages(currentProduct.imageKey, currentProduct.imageCount || 1);
   const key = currentProduct.id + '_' + currentSize;
   const existing = cart.find(c=>c.key===key);
   if(existing) existing.qty += currentQty;
   else cart.push({
     key, id: currentProduct.id, name: currentProduct.name,
     price: currentProduct.price, size: currentSize,
-    qty: currentQty, img: currentProduct.images[0]
+    qty: currentQty, img: images[0] || ''
   });
   saveCart(); updateCartUI();
 
@@ -593,7 +606,7 @@ window.addToCart = function(){
     const r1 = modalImg.getBoundingClientRect();
     const r2 = cartBtn.getBoundingClientRect();
     const fly = document.createElement('img');
-    fly.src = currentProduct.images[0];
+    fly.src = images[0] || '';
     fly.className = 'fly-img';
     fly.style.left = r1.left + r1.width/2 - 40 + 'px';
     fly.style.top = r1.top + r1.height/2 - 40 + 'px';
@@ -635,7 +648,7 @@ function updateCartUI(){
   }
   items.innerHTML = cart.map(c=>`
     <div class="cart-item">
-      <img src="${c.img}" alt="">
+      <img src="${c.img||''}" alt="">
       <div class="cart-item-info">
         <h4>${c.name}</h4>
         <div class="meta">مقاس: <b>${c.size}</b></div>
@@ -669,9 +682,9 @@ window.removeCart = function(key){
   toast('🗑 تم الحذف');
 }
 function showSizePopup(prodId){
-  const p = products.find(x=>x.id===prodId);
+  const p = products.find(x=>String(x.id)===String(prodId));
   if(!p) return;
-  document.getElementById('sizePopupSizes').innerHTML = p.sizes.map(s=>
+  document.getElementById('sizePopupSizes').innerHTML = (p.sizes||[]).map(s=>
     `<button class="size-btn ${s.qty<=0?'disabled':''}" onclick="addSizeFromCart('${s.size}','${prodId}')">${s.size}</button>`
   ).join('');
   document.getElementById('sizePopup').classList.add('show');
@@ -681,13 +694,14 @@ window.closeSizePopup = function(){
   pendingCartAdd = null;
 }
 window.addSizeFromCart = function(size, prodId){
-  const p = products.find(x=>x.id===prodId);
+  const p = products.find(x=>String(x.id)===String(prodId));
   const s = p.sizes.find(x=>x.size===size);
   if(!s || s.qty<=0) return;
+  const images = getImages(p.imageKey, p.imageCount || 1);
   const key = prodId + '_' + size;
   const existing = cart.find(c=>c.key===key);
   if(existing) existing.qty += 1;
-  else cart.push({key, id:prodId, name:p.name, price:p.price, size, qty:1, img:p.images[0]});
+  else cart.push({key, id:prodId, name:p.name, price:p.price, size, qty:1, img:images[0] || ''});
   saveCart(); updateCartUI(); closeSizePopup();
   toast('✓ تمت الإضافة');
 }
@@ -723,7 +737,6 @@ window.submitOrder = async function(){
   const notes = document.getElementById('custNotes').value.trim();
   if(!name || !phone || !city){ toast('⚠ عبّي البيانات المطلوبة'); return; }
 
-  // Get next order number from Firebase counter
   let orderNum = 1;
   try{
     const counterRef = doc(db, 'counters', 'orders');
@@ -734,7 +747,7 @@ window.submitOrder = async function(){
     } else {
       await setDoc(counterRef, { count: 1 });
     }
-  }catch(e){ console.error('counter', e); }
+  }catch(e){ console.error('counter', e); orderNum = Date.now() % 10000; }
 
   const order = {
     num: orderNum,
@@ -746,17 +759,16 @@ window.submitOrder = async function(){
     dateStr: new Date().toLocaleString('ar-LY', {dateStyle:'full', timeStyle:'short'})
   };
 
-  // Save to Firestore
   try{ await addDoc(collection(db, 'orders'), order); }
   catch(e){ console.error('save order', e); }
 
-  // Decrement stock in Firestore
+  // Decrement stock
   for(const it of order.items){
     try{
-      const pRef = doc(db, 'products', it.id);
+      const pRef = doc(db, 'products', String(it.id));
       const pSnap = await getDoc(pRef);
       if(pSnap.exists()){
-        const sizes = pSnap.data().sizes.map(s=>{
+        const sizes = (pSnap.data().sizes || []).map(s=>{
           if(s.size === it.size) return {...s, qty: Math.max(0, s.qty - it.qty)};
           return s;
         });
@@ -765,7 +777,7 @@ window.submitOrder = async function(){
     }catch(e){ console.error('stock', e); }
   }
 
-  // Send telegram (using settings from Firestore)
+  // Telegram
   try{
     const tgSnap = await getDoc(doc(db, 'settings', 'telegram'));
     if(tgSnap.exists()){
@@ -784,10 +796,7 @@ window.submitOrder = async function(){
   cart = []; saveCart(); updateCartUI();
   closeCheckout();
   document.getElementById('successScreen').classList.add('show');
-  document.getElementById('custName').value = '';
-  document.getElementById('custPhone').value = '';
-  document.getElementById('custCity').value = '';
-  document.getElementById('custNotes').value = '';
+  ['custName','custPhone','custCity','custNotes'].forEach(id=>document.getElementById(id).value='');
 }
 
 function buildOrderText(o){
@@ -821,7 +830,6 @@ window.closeSuccess = function(){
   document.body.style.overflow = '';
 }
 
-/* Close outside */
 document.getElementById('productModal').addEventListener('click', e=>{
   if(e.target.id === 'productModal') closeProductModal();
 });
@@ -832,7 +840,6 @@ document.getElementById('checkoutForm').addEventListener('click', e=>{
   if(e.target.id === 'checkoutForm') closeCheckout();
 });
 
-/* INIT */
 updateCartUI();
 </script>
 </body>
