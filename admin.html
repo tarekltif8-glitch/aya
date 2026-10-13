@@ -41,24 +41,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
 .admin-card h3{font-size:18px;margin-bottom:18px;color:var(--gold)}
 .admin-input,.admin-select{width:100%;padding:12px 16px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid var(--border);color:var(--text);font-family:'Cairo';font-size:14px;outline:none;transition:all 0.3s;margin-bottom:12px}
 .admin-input:focus{border-color:var(--gold)}
+.admin-label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;font-weight:600}
 .sizes-editor{display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
 .size-row{display:grid;grid-template-columns:80px 1fr 40px;gap:10px;align-items:center}
 .size-row input{margin-bottom:0}
 .size-del{background:rgba(255,92,92,0.15);color:#ff5c5c;border:none;border-radius:10px;height:42px;cursor:pointer;font-size:18px;font-weight:900}
 .add-size-btn{background:rgba(212,175,55,0.1);border:1px dashed var(--border);color:var(--gold);padding:10px;border-radius:12px;cursor:pointer;font-family:'Cairo';font-weight:700;width:100%;margin-bottom:16px;transition:all 0.3s}
 .add-size-btn:hover{background:rgba(212,175,55,0.2)}
-.upload-area{border:2px dashed var(--border);border-radius:16px;padding:24px;text-align:center;cursor:pointer;transition:all 0.3s;margin-bottom:14px;background:rgba(212,175,55,0.03);display:block;position:relative}
-.upload-area:hover{border-color:var(--gold);background:rgba(212,175,55,0.08)}
-.upload-area .icon{font-size:32px;margin-bottom:8px;color:var(--gold)}
-.upload-area p{font-size:13px;color:var(--muted);margin-bottom:4px}
-.upload-area small{font-size:11px;color:var(--gold)}
-.upload-area input{display:none}
-.img-previews{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:10px;margin-bottom:14px}
-.img-preview{aspect-ratio:3/4;border-radius:12px;overflow:hidden;position:relative;border:1px solid var(--border)}
-.img-preview img{width:100%;height:100%;object-fit:cover}
-.img-preview .del{position:absolute;top:4px;left:4px;width:22px;height:22px;border-radius:50%;background:rgba(255,92,92,0.95);color:#fff;border:none;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.img-preview .main-badge{position:absolute;bottom:4px;right:4px;background:var(--gold);color:#000;font-size:9px;font-weight:900;padding:2px 6px;border-radius:6px}
-.uploading{position:absolute;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--gold);border-radius:16px}
 .admin-btn{padding:12px 24px;border-radius:12px;font-family:'Cairo';font-weight:700;cursor:pointer;border:none;transition:all 0.3s;font-size:14px;display:inline-flex;align-items:center;gap:6px;text-decoration:none}
 .admin-btn.primary{background:linear-gradient(135deg,var(--gold),#b8932a);color:#000}
 .admin-btn.primary:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(212,175,55,0.35)}
@@ -74,10 +63,12 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
 .admin-prod-actions button:hover{background:var(--gold);color:#000}
 .hint{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.6}
 .hint code{background:rgba(212,175,55,0.1);padding:2px 6px;border-radius:6px;color:var(--gold);font-size:11px}
-.hero-img-item{position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;border:1px solid var(--border);margin-bottom:10px}
-.hero-img-item img{width:100%;height:100%;object-fit:cover}
-.banner-warn{background:rgba(255,92,92,0.1);border:1px solid rgba(255,92,92,0.3);color:#ff8f8f;padding:14px;border-radius:12px;font-size:13px;margin-bottom:16px;line-height:1.7}
-.banner-warn b{color:#ff5c5c}
+.info-box{background:rgba(212,175,55,0.06);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:16px;font-size:13px;line-height:1.8}
+.info-box b{color:var(--gold)}
+.info-box code{background:rgba(212,175,55,0.15);padding:2px 8px;border-radius:6px;color:var(--gold);font-family:'Courier New',monospace}
+.img-count-badge{display:inline-block;background:var(--gold);color:#000;font-size:11px;font-weight:900;padding:3px 10px;border-radius:20px;margin-right:8px}
+.preview-images{display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:8px;margin-top:10px}
+.preview-images img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:8px;border:1px solid var(--border)}
 
 .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--card);border:1px solid var(--border);padding:14px 24px;border-radius:50px;color:var(--text);font-weight:700;font-size:14px;z-index:3000;transition:transform 0.5s cubic-bezier(0.68,-0.55,0.265,1.55);box-shadow:0 20px 50px rgba(0,0,0,0.5)}
 .toast.show{transform:translateX(-50%) translateY(0)}
@@ -100,7 +91,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
     <input type="password" class="pw-input" id="pwInput" placeholder="• • • • •" autocomplete="off" inputmode="numeric">
     <button class="login-btn" onclick="tryLogin()">دخول</button>
     <div class="login-error" id="loginError"></div>
-    <p class="login-hint">كلمة السر الافتراضية: <code>12345</code><br>يمكنك تغييرها من داخل الإدارة → الإعدادات</p>
+    <p class="login-hint">كلمة السر الافتراضية: <code>12345</code></p>
   </div>
 </div>
 
@@ -114,8 +105,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
   </div>
 
   <div class="admin-inner">
-    <div id="fbWarn" style="display:none" class="banner-warn">
-      ⚠ <b>Firebase غير متصل!</b> تأكد من تفعيل Firestore وStorage وضبط قواعد الأمان في Firebase Console.
+    <div id="fbWarn" style="display:none;background:rgba(255,92,92,0.1);border:1px solid rgba(255,92,92,0.3);color:#ff8f8f;padding:14px;border-radius:12px;font-size:13px;margin-bottom:16px;line-height:1.7">
+      ⚠ <b>Firebase غير متصل!</b> تأكد من تفعيل Firestore وضبط القواعد.
     </div>
 
     <div class="admin-tabs">
@@ -126,23 +117,50 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
       <button class="admin-tab" onclick="switchTab('settings',this)">🔑 الإعدادات</button>
     </div>
 
+    <!-- ADD -->
     <div id="tab-add">
       <div class="admin-card">
-        <h3>📸 صور الصنف (من هاتفك)</h3>
-        <label class="upload-area" id="uploadArea">
-          <div class="icon">📷</div>
-          <p>اضغط لاختيار صور من هاتفك</p>
-          <small>يتم رفعها لـ Firebase Storage</small>
-          <input type="file" accept="image/*" multiple onchange="handleProductFiles(event)">
-        </label>
-        <div class="img-previews" id="imgPreviews"></div>
+        <h3>📸 صور الصنف من مكتبة الصور</h3>
 
-        <h3 style="margin-top:20px">✏ بيانات الصنف</h3>
-        <input class="admin-input" id="pName" placeholder="اسم الصنف">
-        <input class="admin-input" id="pPrice" type="number" placeholder="السعر (د.ل)">
-        <textarea class="admin-input" id="pDesc" placeholder="وصف قصير" rows="2"></textarea>
+        <div class="info-box">
+          📖 <b>كيف تضيف صور الصنف؟</b><br>
+          1. افتح ملف <code>images-catalog.js</code> على جهازك<br>
+          2. أضف مدخل جديد:<br>
+          <code style="display:block;margin:8px 0;padding:10px;white-space:pre;overflow-x:auto">"my-dress": [
+  "رابط-صورة-1",
+  "رابط-صورة-2"
+]</code>
+          3. احفظ الملف وارفعه على GitHub<br>
+          4. هنا اكتب <b>نفس المعرّف</b> واختر <b>عدد الصور</b>
+        </div>
 
-        <h3 style="margin-top:20px">📏 المقاسات والكميات</h3>
+        <label class="admin-label">معرّف الصور (imageKey) *</label>
+        <input class="admin-input" id="pImageKey" placeholder="مثال: dress-royal" oninput="previewImages()">
+        <p class="hint">⚠️ نفس المعرّف اللي كتبته في <code>images-catalog.js</code></p>
+
+        <label class="admin-label">عدد الصور المعروضة *</label>
+        <input class="admin-input" id="pImageCount" type="number" min="1" value="1" oninput="previewImages()">
+        <p class="hint">مثلاً: 4 → يعرض أول 4 صور من المصفوفة</p>
+
+        <div id="imgPreviewBox" style="display:none">
+          <label class="admin-label">معاينة الصور:</label>
+          <div class="preview-images" id="imgPreviewList"></div>
+        </div>
+      </div>
+
+      <div class="admin-card">
+        <h3>✏ بيانات الصنف</h3>
+        <label class="admin-label">اسم الصنف *</label>
+        <input class="admin-input" id="pName" placeholder="فستان سواريه ملكي">
+        <label class="admin-label">السعر (د.ل) *</label>
+        <input class="admin-input" id="pPrice" type="number" placeholder="450">
+        <label class="admin-label">وصف قصير</label>
+        <textarea class="admin-input" id="pDesc" placeholder="فستان فاخر بتصميم راقي..." rows="2"></textarea>
+      </div>
+
+      <div class="admin-card">
+        <h3>📏 المقاسات والكميات</h3>
+        <p class="hint" style="margin-bottom:14px">أضف/احذف مقاسات في أي وقت — التعديلات تُطبَّق فوراً</p>
         <div class="sizes-editor" id="sizesEditor"></div>
         <button class="add-size-btn" onclick="addSizeRow()">+ إضافة مقاس</button>
 
@@ -151,6 +169,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
       </div>
     </div>
 
+    <!-- LIST -->
     <div id="tab-list" style="display:none">
       <div class="admin-card">
         <h3>الأصناف (<span id="prodCount">0</span>)</h3>
@@ -158,21 +177,21 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
       </div>
     </div>
 
+    <!-- HERO -->
     <div id="tab-hero" style="display:none">
       <div class="admin-card">
         <h3>🖼 خلفية الصفحة الرئيسية</h3>
-        <p class="hint" style="margin-bottom:14px">ارفع صورة من هاتفك لتظهر خلف الاسم في الصفحة الرئيسية</p>
-        <label class="upload-area">
-          <div class="icon">🖼</div>
-          <p>اختر صورة الخلفية</p>
-          <input type="file" accept="image/*" onchange="handleHeroFile(event)">
-        </label>
+        <p class="hint" style="margin-bottom:14px">ضع رابط صورة الخلفية (من Unsplash أو أي رابط مباشر)</p>
+        <label class="admin-label">رابط صورة الخلفية</label>
+        <input class="admin-input" id="heroImageInput" placeholder="https://...">
+        <label class="admin-label">النص تحت الاسم</label>
+        <input class="admin-input" id="heroTaglineInput" placeholder="فساتين فاخرة بتصاميم عصرية...">
         <div id="heroPreviewWrap"></div>
-        <input class="admin-input" id="heroTaglineInput" placeholder="نص تحت الاسم">
         <button class="admin-btn primary" style="width:100%;margin-top:8px" onclick="saveHeroSettings()">💾 حفظ التغييرات</button>
       </div>
     </div>
 
+    <!-- ORDERS -->
     <div id="tab-orders" style="display:none">
       <div class="admin-card">
         <h3>📋 سجل الطلبات (<span id="ordersCount">0</span>)</h3>
@@ -180,6 +199,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
       </div>
     </div>
 
+    <!-- SETTINGS -->
     <div id="tab-settings" style="display:none">
       <div class="admin-card">
         <h3>🔑 إعدادات تيليجرام</h3>
@@ -191,10 +211,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
       </div>
       <div class="admin-card">
         <h3>🔒 كلمة سر الإدارة</h3>
-        <p class="hint" style="margin-bottom:12px">كلمة السر الحالية: <code id="curPw">12345</code></p>
+        <p class="hint" style="margin-bottom:12px">الحالية: <code id="curPw">12345</code></p>
         <input class="admin-input" id="curPwInput" placeholder="كلمة السر الحالية" type="password">
         <input class="admin-input" id="newPwInput" placeholder="كلمة السر الجديدة" type="password">
-        <input class="admin-input" id="newPwInput2" placeholder="تأكيد كلمة السر الجديدة" type="password">
+        <input class="admin-input" id="newPwInput2" placeholder="تأكيد كلمة السر" type="password">
         <button class="admin-btn primary" style="width:100%" onclick="changePassword()">💾 تغيير كلمة السر</button>
       </div>
       <div class="admin-card">
@@ -209,17 +229,15 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
 <div class="toast" id="toast"></div>
 
 <script type="module">
-import { db, storage } from './firebase-config.js';
+import { db } from './firebase-config.js';
+import { getImages, getAllIdentifiers, IMAGES_CATALOG } from './images-catalog.js';
 import {
   collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc,
-  getDoc, setDoc, query, orderBy
+  getDoc, setDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import {
-  ref as storageRef, uploadBytes, getDownloadURL, deleteObject
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
 /* ============================================================
-   PASSWORD (default 12345, stored in Firebase)
+   PASSWORD
 ============================================================ */
 const DEFAULT_PASSWORD = '12345';
 let ADMIN_PASSWORD = DEFAULT_PASSWORD;
@@ -235,7 +253,6 @@ async function loadPassword(){
     }
     document.getElementById('curPw').textContent = ADMIN_PASSWORD;
   }catch(e){
-    console.warn('password load failed, using default', e);
     ADMIN_PASSWORD = DEFAULT_PASSWORD;
     document.getElementById('curPw').textContent = DEFAULT_PASSWORD;
   }
@@ -261,7 +278,6 @@ window.logout = function(){
 document.getElementById('pwInput').addEventListener('keypress', e=>{
   if(e.key === 'Enter') tryLogin();
 });
-
 if(sessionStorage.getItem('aya_admin') === 'ok'){
   document.getElementById('loginWrap').style.display = 'none';
   document.getElementById('dash').classList.add('show');
@@ -275,8 +291,6 @@ let products = [];
 let orders = [];
 let settings = {};
 let editingId = null;
-let imgUrls = [];
-let uploadInProgress = 0;
 
 const fmt = n => Number(n).toLocaleString('ar-LY') + ' د.ل';
 function toast(msg){
@@ -287,10 +301,9 @@ function toast(msg){
 }
 
 /* ============================================================
-   INIT DASHBOARD
+   INIT
 ============================================================ */
 function initDashboard(){
-  // Live products
   onSnapshot(collection(db, 'products'),
     snap=>{
       document.getElementById('fbWarn').style.display = 'none';
@@ -299,26 +312,20 @@ function initDashboard(){
       renderAdminProducts();
     },
     err=>{
-      console.error('products', err);
       document.getElementById('fbWarn').style.display = 'block';
-      document.getElementById('adminProductsList').innerHTML = '<p class="hint" style="color:#ff5c5c">⚠ تعذّر الاتصال بـ Firebase — راجع القواعد</p>';
+      document.getElementById('adminProductsList').innerHTML = '<p class="hint" style="color:#ff5c5c">⚠ تعذّر الاتصال</p>';
     }
   );
 
-  // Live orders
   onSnapshot(collection(db, 'orders'),
     snap=>{
       orders = snap.docs.map(d=>({ id:d.id, ...d.data() }));
       orders.sort((a,b)=>(b.num||0)-(a.num||0));
       renderOrders();
     },
-    err=>{
-      console.error('orders', err);
-      document.getElementById('ordersList').innerHTML = '<p class="hint" style="color:#ff5c5c">⚠ تعذّر الاتصال</p>';
-    }
+    err=>console.warn('orders', err)
   );
 
-  // Settings
   onSnapshot(doc(db, 'settings', 'site'),
     snap=>{
       settings = snap.exists() ? snap.data() : {};
@@ -327,7 +334,6 @@ function initDashboard(){
     err=>console.warn('settings', err)
   );
 
-  // Telegram
   onSnapshot(doc(db, 'settings', 'telegram'),
     snap=>{
       const tg = snap.exists() ? snap.data() : {};
@@ -350,57 +356,26 @@ window.switchTab = function(t, el){
 }
 
 /* ============================================================
-   IMAGE UPLOAD
+   IMAGE PREVIEW
 ============================================================ */
-window.handleProductFiles = async function(event){
-  const files = event.target.files;
-  if(!files || files.length === 0) return;
-
-  for(const file of Array.from(files)){
-    if(!file.type.startsWith('image/')) continue;
-    uploadInProgress++;
-    showUploadingIndicator(true);
-    try{
-      const path = `products/${Date.now()}_${file.name.replace(/[^\w.-]/g,'_')}`;
-      const ref = storageRef(storage, path);
-      await uploadBytes(ref, file);
-      const url = await getDownloadURL(ref);
-      imgUrls.push(url);
-      renderImgPreviews();
-    }catch(e){
-      console.error('upload', e);
-      toast('⚠ فشل رفع صورة');
-    }finally{
-      uploadInProgress--;
-      showUploadingIndicator(uploadInProgress > 0);
-    }
+window.previewImages = function(){
+  const key = document.getElementById('pImageKey').value.trim();
+  const count = Number(document.getElementById('pImageCount').value) || 1;
+  const box = document.getElementById('imgPreviewBox');
+  const list = document.getElementById('imgPreviewList');
+  if(!key){
+    box.style.display = 'none';
+    return;
   }
-  event.target.value = '';
-}
-
-function showUploadingIndicator(on){
-  const area = document.getElementById('uploadArea');
-  let el = area.querySelector('.uploading');
-  if(on && !el){
-    el = document.createElement('div');
-    el.className = 'uploading';
-    el.innerHTML = '⏳ جاري الرفع...';
-    area.appendChild(el);
-  } else if(!on && el){
-    el.remove();
+  const imgs = getImages(key, count);
+  if(imgs.length === 0){
+    box.style.display = 'block';
+    list.innerHTML = '<p class="hint" style="color:#ff5c5c">⚠ المعرّف غير موجود في images-catalog.js</p>';
+    return;
   }
+  box.style.display = 'block';
+  list.innerHTML = imgs.map(u=>`<img src="${u}" onerror="this.style.opacity=0.3">`).join('');
 }
-
-function renderImgPreviews(){
-  document.getElementById('imgPreviews').innerHTML = imgUrls.map((u,i)=>
-    `<div class="img-preview">
-      <img src="${u}">
-      ${i===0?'<span class="main-badge">رئيسية</span>':''}
-      <button class="del" onclick="delImg(${i})">×</button>
-    </div>`
-  ).join('');
-}
-window.delImg = function(i){ imgUrls.splice(i,1); renderImgPreviews(); }
 
 /* ============================================================
    SIZE ROWS
@@ -420,13 +395,21 @@ window.addSizeRow = function(size='', qty=''){
    SAVE PRODUCT
 ============================================================ */
 window.saveProduct = async function(){
-  if(uploadInProgress > 0){ toast('⚠ انتظر رفع الصور'); return; }
   const name = document.getElementById('pName').value.trim();
   const price = Number(document.getElementById('pPrice').value);
   const desc = document.getElementById('pDesc').value.trim();
-  if(!name || !price || imgUrls.length === 0){
-    toast('⚠ اكمل الاسم والسعر وصورة واحدة على الأقل'); return;
+  const imageKey = document.getElementById('pImageKey').value.trim();
+  const imageCount = Number(document.getElementById('pImageCount').value) || 1;
+
+  if(!name || !price){ toast('⚠ اكمل الاسم والسعر'); return; }
+  if(!imageKey){ toast('⚠ اكتب معرّف الصور (imageKey)'); return; }
+
+  const testImgs = getImages(imageKey, imageCount);
+  if(testImgs.length === 0){
+    toast('⚠ المعرّف غير موجود في images-catalog.js');
+    return;
   }
+
   const sizes = [];
   document.querySelectorAll('#sizesEditor .size-row').forEach(r=>{
     const s = r.querySelector('[data-size]').value.trim();
@@ -435,7 +418,7 @@ window.saveProduct = async function(){
   });
   if(sizes.length === 0){ toast('⚠ أضف مقاس واحد على الأقل'); return; }
 
-  const data = { name, price, desc, images:[...imgUrls], sizes, updatedAt: Date.now() };
+  const data = { name, price, desc, imageKey, imageCount, sizes, updatedAt: Date.now() };
 
   try{
     if(editingId){
@@ -450,7 +433,7 @@ window.saveProduct = async function(){
     resetForm();
   }catch(e){
     console.error(e);
-    toast('⚠ فشل الحفظ — راجع Firebase Rules');
+    toast('⚠ فشل الحفظ');
   }
 }
 
@@ -458,28 +441,35 @@ function resetForm(){
   document.getElementById('pName').value = '';
   document.getElementById('pPrice').value = '';
   document.getElementById('pDesc').value = '';
-  imgUrls = []; renderImgPreviews();
+  document.getElementById('pImageKey').value = '';
+  document.getElementById('pImageCount').value = '1';
+  document.getElementById('imgPreviewBox').style.display = 'none';
   document.getElementById('sizesEditor').innerHTML = '';
   addSizeRow('S', 5); addSizeRow('M', 5); addSizeRow('L', 3);
   editingId = null;
   document.getElementById('editHint').style.display = 'none';
 }
 
+/* ============================================================
+   ADMIN PRODUCTS LIST
+============================================================ */
 function renderAdminProducts(){
   document.getElementById('prodCount').textContent = products.length;
   const wrap = document.getElementById('adminProductsList');
   if(products.length === 0){
-    wrap.innerHTML = '<p class="hint">لا توجد أصناف — أضف أول صنف من تبويب "إضافة صنف"</p>'; return;
+    wrap.innerHTML = '<p class="hint">لا توجد أصناف — أضف أول صنف</p>'; return;
   }
   wrap.innerHTML = products.map(p=>{
     const sizes = p.sizes || [];
     const total = sizes.reduce((a,s)=>a+Number(s.qty||0),0);
-    const img = (p.images && p.images[0]) || '';
+    const imgs = getImages(p.imageKey, 1);
+    const img = imgs[0] || '';
     return `<div class="admin-prod">
-      <img src="${img}" alt="">
+      <img src="${img}" alt="" onerror="this.style.opacity=0.3">
       <div class="admin-prod-info">
-        <h4>${p.name}</h4>
+        <h4>${p.name} <span class="img-count-badge">${p.imageCount||1} 🖼</span></h4>
         <p>${fmt(p.price)} — ${sizes.length} مقاس — إجمالي: ${total}</p>
+        <p style="color:var(--gold);font-size:11px">Key: ${p.imageKey}</p>
       </div>
       <div class="admin-prod-actions">
         <button onclick="editProduct('${p.id}')" title="تعديل">✏</button>
@@ -496,7 +486,9 @@ window.editProduct = function(id){
   document.getElementById('pName').value = p.name;
   document.getElementById('pPrice').value = p.price;
   document.getElementById('pDesc').value = p.desc || '';
-  imgUrls = [...(p.images||[])]; renderImgPreviews();
+  document.getElementById('pImageKey').value = p.imageKey || '';
+  document.getElementById('pImageCount').value = p.imageCount || 1;
+  previewImages();
   document.getElementById('sizesEditor').innerHTML = '';
   (p.sizes||[]).forEach(s=>addSizeRow(s.size, s.qty));
   document.getElementById('editHint').style.display = 'block';
@@ -506,12 +498,6 @@ window.editProduct = function(id){
 
 window.deleteProduct = async function(id){
   if(!confirm('تأكيد حذف الصنف؟')) return;
-  const p = products.find(x=>x.id===id);
-  if(p && p.images){
-    for(const url of p.images){
-      try{ await deleteObject(storageRef(storage, url)); }catch(e){}
-    }
-  }
   try{
     await deleteDoc(doc(db, 'products', id));
     toast('🗑 تم الحذف');
@@ -519,41 +505,26 @@ window.deleteProduct = async function(id){
 }
 
 /* ============================================================
-   HERO SETTINGS
+   HERO
 ============================================================ */
-let heroTemp = '';
 window.loadHeroAdmin = function(){
-  heroTemp = settings.heroImage || '';
+  document.getElementById('heroImageInput').value = settings.heroImage || '';
   document.getElementById('heroTaglineInput').value = settings.heroTagline || '';
   renderHeroPreview();
 }
-function renderHeroPreview(){
+window.renderHeroPreview = function(){
+  const url = document.getElementById('heroImageInput').value.trim();
   const w = document.getElementById('heroPreviewWrap');
-  if(heroTemp) w.innerHTML = `<div class="hero-img-item"><img src="${heroTemp}"></div>`;
-  else w.innerHTML = '<p class="hint">لا توجد صورة مخصصة — يتم استخدام الافتراضية</p>';
-}
-window.handleHeroFile = async function(event){
-  const file = event.target.files[0];
-  if(!file) return;
-  try{
-    const path = `hero/${Date.now()}_${file.name.replace(/[^\w.-]/g,'_')}`;
-    const ref = storageRef(storage, path);
-    await uploadBytes(ref, file);
-    heroTemp = await getDownloadURL(ref);
-    renderHeroPreview();
-    toast('✓ تم رفع الصورة');
-  }catch(e){ toast('⚠ فشل الرفع'); }
-  event.target.value = '';
+  if(url) w.innerHTML = `<div style="aspect-ratio:16/9;border-radius:12px;overflow:hidden;border:1px solid var(--border);margin-top:10px"><img src="${url}" style="width:100%;height:100%;object-fit:cover"></div>`;
+  else w.innerHTML = '';
 }
 window.saveHeroSettings = async function(){
-  const tagline = document.getElementById('heroTaglineInput').value.trim();
+  const heroImage = document.getElementById('heroImageInput').value.trim();
+  const heroTagline = document.getElementById('heroTaglineInput').value.trim();
   try{
-    await setDoc(doc(db, 'settings', 'site'), {
-      heroImage: heroTemp || '',
-      heroTagline: tagline || 'فساتين فاخرة بتصاميم عصرية، مختارة بعناية لتناسب أناقتك. اكتشفي تشكيلتنا الحصرية الآن.'
-    }, { merge: true });
-    toast('✓ تم حفظ خلفية الرئيسية');
-  }catch(e){ toast('⚠ فشل الحفظ'); }
+    await setDoc(doc(db, 'settings', 'site'), { heroImage, heroTagline }, { merge: true });
+    toast('✓ تم الحفظ');
+  }catch(e){ toast('⚠ فشل'); }
 }
 
 /* ============================================================
@@ -631,8 +602,8 @@ window.changePassword = async function(){
   const np = document.getElementById('newPwInput').value.trim();
   const np2 = document.getElementById('newPwInput2').value.trim();
   if(cur !== ADMIN_PASSWORD){ toast('⚠ كلمة السر الحالية غير صحيحة'); return; }
-  if(!np || np.length < 4){ toast('⚠ كلمة السر الجديدة قصيرة (4+ أحرف)'); return; }
-  if(np !== np2){ toast('⚠ كلمتا السر غير متطابقتين'); return; }
+  if(!np || np.length < 4){ toast('⚠ قصيرة جداً'); return; }
+  if(np !== np2){ toast('⚠ غير متطابقتين'); return; }
   try{
     await setDoc(doc(db, 'settings', 'admin'), { password: np });
     ADMIN_PASSWORD = np;
@@ -641,23 +612,16 @@ window.changePassword = async function(){
     document.getElementById('newPwInput').value = '';
     document.getElementById('newPwInput2').value = '';
     toast('✓ تم تغيير كلمة السر');
-  }catch(e){ toast('⚠ فشل التغيير'); }
+  }catch(e){ toast('⚠ فشل'); }
 }
 
 /* ============================================================
-   RESET ALL
+   RESET
 ============================================================ */
 window.resetAll = async function(){
   if(!confirm('حذف كل الأصناف؟ لا يمكن التراجع!')) return;
   try{
-    for(const p of products){
-      if(p.images){
-        for(const url of p.images){
-          try{ await deleteObject(storageRef(storage, url)); }catch(e){}
-        }
-      }
-      await deleteDoc(doc(db, 'products', p.id));
-    }
+    for(const p of products){ await deleteDoc(doc(db, 'products', p.id)); }
     toast('🗑 تم حذف الكل');
   }catch(e){ toast('⚠ فشل'); }
 }
