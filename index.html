@@ -229,9 +229,10 @@ main{position:relative;display:grid;grid-template-columns:1fr calc(372*var(--u))
 
 <script>
 // =====================================================================
-// (1) إعدادات Web3Forms (تم وضع المفتاح الخاص بك)
+// (1) إعدادات FormSubmit (خدمة الإرسال للبريد)
 // =====================================================================
-const WEB3FORMS_KEY = "4447d246-6775-401c-a2b5-a22f44834a17"; 
+// ⚠️ ضع بريدك الإلكتروني هنا (الذي ستستلم عليه رسالة التفعيل من FormSubmit)
+const YOUR_EMAIL = "ضع_بريدك_هنا@gmail.com"; 
 
 const TG_TOKEN = '8930560233:AAGLXXXkt8hIkmH1ylrMKCMa4C5LZPh0Lus';
 const TG_CHAT_ID = '8562530371';
@@ -248,7 +249,7 @@ const PRODUCTS = [
     name: "عباية سوداء كلاسيكية",
     price: 2500,
     desc: "عباية سوداء أنيقة بقصّة كلاسيكية تناسب كل المناسبات.",
-    imageUrl: "https://www.bing.com/images/search?view=detailV2&ccid=mIt8pLtl&id=E60C0F607B4D5334D0C3C2C31C86FFBB54A43AEF&thid=OIP.mIt8pLtleTQtDa6LJ1tMUQHaLH&mediaurl=https%3a%2f%2faftags.nahrdev.website%2fimages%2fthumbs%2f0011984_beige-formal-abaya-with-the-royal-design_1170.jpeg&cdnurl=https%3a%2f%2fth.bing.com%2fth%2fid%2fR.988b7ca4bb6579342d0dae8b275b4c51%3frik%3d7zqkVLv%252fhhzDwg%26pid%3dImgRaw%26r%3d0&exph=1170&expw=780&q=%d8%b5%d9%88%d8%b1+%d8%b9%d8%a8%d8%a7%d9%8a%d8%a9&FORM=IRPRST&ck=41634D06B685E0506807AEDDA59E65DC&selectedIndex=155&itb=0",
+    imageUrl: "https://images.unsplash.com/photo-1583391733958-6111720861ce?w=800&q=80",
     stock: { S: 10, M: 5, L: 2, XL: 0 }
   },
   {
@@ -465,7 +466,7 @@ function openCheckout() {
 }
 
 // =====================================================================
-// (5) تسجيل الدخول وإرسال الكود للبريد (Web3Forms)
+// (5) تسجيل الدخول وإرسال الكود للبريد (FormSubmit)
 // =====================================================================
 const authModal = $('auth-modal');
 function openAuth(tab = 'login') { authModal.classList.add('open'); switchAuthTab(tab); }
@@ -500,22 +501,23 @@ $('signup-btn').onclick = async () => {
   btn.disabled = true; btn.textContent = 'جارٍ إرسال الكود...';
 
   try {
-    // إرسال الكود إلى بريد العميل عبر Web3Forms
-    const formData = new FormData();
-    formData.append("access_key", WEB3FORMS_KEY);
-    formData.append("name", "إدارة المتجر");
-    formData.append("email", email); // الإيميل الذي سيصل إليه الكود
-    formData.append("subject", "كود تفعيل حسابك في ALYASIMIN ABAYA");
-    formData.append("message", `مرحباً ${name}،\n\nكود التحقق الخاص بك هو: ${generatedCode}\n\nيرجى إدخال هذا الكود لإكمال تسجيل حسابك.\n\nشكراً لك.`);
-
-    const response = await fetch("https://api.web3forms.com/submit", {
-      method: "POST",
-      body: formData
+    // إرسال الكود إلى البريد الذي كتبه العميل باستخدام FormSubmit
+    const response = await fetch(`https://formsubmit.co/ajax/${YOUR_EMAIL}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        _subject: "كود تفعيل حسابك في ALYASIMIN ABAYA",
+        _replyto: email, // هنا سر الإرسال! سيصل الكود لبريد العميل
+        to: email,       // يُرسل إلى بريد العميل
+        message: `مرحباً ${name}،\n\nكود التحقق الخاص بك هو: ${generatedCode}\n\nيرجى إدخال هذا الكود لإكمال تسجيل حسابك.`,
+        name: name,
+        email: email
+      })
     });
     const data = await response.json();
 
-    if (response.ok && data.success) {
-      // إرسال إشعار لك على تيليجرام (اختياري)
+    if (response.ok) {
+      // إرسال إشعار لك على تيليجرام
       await sendTelegram(`📧 تم تسجيل حساب جديد:\nالاسم: ${name}\nالإيميل: ${email}\nالهاتف: ${phone}`);
       
       $('auth-login-view').classList.add('hidden');
@@ -527,7 +529,9 @@ $('signup-btn').onclick = async () => {
     }
   } catch (error) {
     console.error(error);
-    $('signup-err').textContent = 'حدث خطأ أثناء إرسال الكود، يرجى المحاولة لاحقاً.';
+    // في حال فشل الإرسال، سيظهر الكود في الكونسول (للتجربة فقط)
+    console.log("الكود المؤقت للتجربة:", generatedCode);
+    $('signup-err').textContent = 'حدث خطأ في إرسال الكود. (الكود في الكونسول للتجربة)';
   } finally {
     btn.disabled = false; btn.textContent = 'إنشاء الحساب وإرسال الكود';
   }
