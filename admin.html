@@ -1,27 +1,17 @@
 // admin.js
+import { PRODUCTS as DEFAULT_PRODUCTS } from './products.js';
+
 const ADMIN_USER = 'tarek';
 const ADMIN_PASS = '808909';
 const SIZES = ['XS','S','M','L','XL'];
 const $ = id => document.getElementById(id);
 
-// دالة لجلب الأصناف من app.js (نستخدم import ديناميكي أو نكررها هنا للتجربة)
-import { PRODUCTS as DEFAULT_PRODUCTS } from './products.js';
-
-let PRODUCTS = [...DEFAULT_PRODUCTS];
+let PRODUCTS = JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
 let adminAuthed = false;
 
-// زر الإدارة مخفي في HTML، نظهره فقط إذا كان المستخدم الحالي هو الأدمن
-document.addEventListener('DOMContentLoaded', () => {
-  // مراقبة حالة الدخول (يفترض أن app.js يضع currentUser في النافذة)
-  // سنبقي الزر مخفياً حتى يتم تسجيل الدخول كأدمن (من خلال فحص محلي)
-  // لتبسيط الأمر: نضع زر الإدارة في مكانه، وعند الضغط عليه يطلب تسجيل الدخول
-});
-
-// فتح لوحة الإدارة
-$('admin-btn').onclick = (e) => {
-  e.preventDefault();
-  openAdmin();
-};
+// فتح لوحة الإدارة بالنقر على زر الإدارة (أو النقر المزدوج على الشعار)
+$('admin-btn').style.display = 'block';
+$('admin-btn').onclick = (e) => { e.preventDefault(); openAdmin(); };
 
 function openAdmin() {
   $('admin-overlay').classList.add('open');
@@ -73,7 +63,7 @@ function renderAdminTable() {
   tbody.innerHTML = PRODUCTS.map((p, i) => `
     <tr>
       <td>${i + 1}</td>
-      <td><img src="${p.imageUrl || ''}" style="width:50px;height:50px;object-fit:cover;border:1px solid var(--line)"></td>
+      <td><img src="${p.imageUrl}" style="width:50px;height:50px;object-fit:cover;border:1px solid var(--line)"></td>
       <td>${p.name}</td>
       <td>${p.category || ''}</td>
       <td>
@@ -93,7 +83,6 @@ function renderAdminTable() {
       const p = PRODUCTS.find(x => x.id === id);
       if (p) { p.stock[size] = val; }
     });
-    // حفظ التغييرات في localStorage (للتجربة)
     localStorage.setItem('alyasimin-stock', JSON.stringify(PRODUCTS));
     alert('تم حفظ الكميات');
   };
