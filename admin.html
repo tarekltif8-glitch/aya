@@ -1,631 +1,105 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>لوحة الإدارة — Aya Boutique</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;500;700;900&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-:root{--bg:#0a0a0f;--bg2:#12121a;--gold:#d4af37;--rose:#e8a5b0;--text:#f5f5f7;--muted:#8a8a96;--card:#1a1a24;--border:rgba(212,175,55,0.18)}
-body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;position:relative}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 20% 20%, rgba(212,175,55,0.08), transparent 40%),radial-gradient(circle at 80% 70%, rgba(232,165,176,0.06), transparent 45%);pointer-events:none;z-index:0}
-::-webkit-scrollbar{width:8px}
-::-webkit-scrollbar-track{background:var(--bg2)}
-::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--gold),var(--rose));border-radius:10px}
+// admin.js
+const ADMIN_USER = 'tarek';
+const ADMIN_PASS = '808909';
+const SIZES = ['XS','S','M','L','XL'];
+const $ = id => document.getElementById(id);
 
-.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;position:relative;z-index:2}
-.login-box{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:40px;max-width:420px;width:100%;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,0.5)}
-.login-box .logo{font-family:'Playfair Display',serif;font-size:32px;font-weight:900;background:linear-gradient(135deg,var(--gold),var(--rose),var(--gold));background-size:200% 200%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:shine 4s ease infinite;margin-bottom:6px}
-@keyframes shine{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
-.login-box .sub{color:var(--muted);font-size:13px;letter-spacing:3px;margin-bottom:30px}
-.login-box h2{font-family:'Playfair Display',serif;font-size:22px;margin-bottom:20px}
-.pw-input{width:100%;padding:15px 18px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid var(--border);color:var(--text);font-family:'Cairo';font-size:16px;outline:none;transition:all 0.3s;text-align:center;letter-spacing:6px;margin-bottom:14px}
-.pw-input:focus{border-color:var(--gold);background:rgba(212,175,55,0.05)}
-.login-btn{width:100%;padding:15px;border-radius:12px;background:linear-gradient(135deg,var(--gold),#b8932a);color:#000;font-family:'Cairo';font-weight:900;font-size:16px;border:none;cursor:pointer;transition:all 0.3s}
-.login-btn:hover{transform:translateY(-2px);box-shadow:0 15px 40px rgba(212,175,55,0.4)}
-.login-error{color:#ff5c5c;font-size:13px;margin-top:12px;min-height:20px}
-.login-hint{font-size:12px;color:var(--muted);margin-top:20px;line-height:1.7}
-.login-hint code{background:rgba(212,175,55,0.1);padding:2px 8px;border-radius:6px;color:var(--gold);font-size:13px;font-weight:700}
+// دالة لجلب الأصناف من app.js (نستخدم import ديناميكي أو نكررها هنا للتجربة)
+import { PRODUCTS as DEFAULT_PRODUCTS } from './products.js';
 
-.dash{display:none;position:relative;z-index:2;padding:24px}
-.dash.show{display:block}
-.dash-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px;flex-wrap:wrap;gap:16px;background:var(--card);padding:20px 24px;border-radius:20px;border:1px solid var(--border)}
-.dash-head .brand{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;background:linear-gradient(135deg,var(--gold),var(--rose));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.dash-head .actions{display:flex;gap:10px;flex-wrap:wrap}
-.admin-inner{max-width:1000px;margin:0 auto}
-.admin-tabs{display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap}
-.admin-tab{padding:10px 22px;border-radius:50px;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--muted);font-family:'Cairo';font-weight:700;cursor:pointer;transition:all 0.3s;font-size:14px}
-.admin-tab.active{background:linear-gradient(135deg,var(--gold),#b8932a);color:#000;border-color:var(--gold)}
-.admin-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:24px;margin-bottom:20px}
-.admin-card h3{font-size:18px;margin-bottom:18px;color:var(--gold)}
-.admin-input,.admin-select{width:100%;padding:12px 16px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid var(--border);color:var(--text);font-family:'Cairo';font-size:14px;outline:none;transition:all 0.3s;margin-bottom:12px}
-.admin-input:focus{border-color:var(--gold)}
-.admin-label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;font-weight:600}
-.sizes-editor{display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
-.size-row{display:grid;grid-template-columns:80px 1fr 40px;gap:10px;align-items:center}
-.size-row input{margin-bottom:0}
-.size-del{background:rgba(255,92,92,0.15);color:#ff5c5c;border:none;border-radius:10px;height:42px;cursor:pointer;font-size:18px;font-weight:900}
-.add-size-btn{background:rgba(212,175,55,0.1);border:1px dashed var(--border);color:var(--gold);padding:10px;border-radius:12px;cursor:pointer;font-family:'Cairo';font-weight:700;width:100%;margin-bottom:16px;transition:all 0.3s}
-.add-size-btn:hover{background:rgba(212,175,55,0.2)}
-.admin-btn{padding:12px 24px;border-radius:12px;font-family:'Cairo';font-weight:700;cursor:pointer;border:none;transition:all 0.3s;font-size:14px;display:inline-flex;align-items:center;gap:6px;text-decoration:none}
-.admin-btn.primary{background:linear-gradient(135deg,var(--gold),#b8932a);color:#000}
-.admin-btn.primary:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(212,175,55,0.35)}
-.admin-btn.danger{background:rgba(255,92,92,0.15);color:#ff5c5c}
-.admin-btn.ghost{background:rgba(255,255,255,0.05);color:var(--text)}
-.admin-prod{display:flex;gap:14px;padding:14px;background:rgba(255,255,255,0.02);border-radius:14px;margin-bottom:10px;align-items:center}
-.admin-prod img{width:60px;height:75px;object-fit:cover;border-radius:10px}
-.admin-prod-info{flex:1;min-width:0}
-.admin-prod-info h4{font-size:15px;margin-bottom:4px}
-.admin-prod-info p{font-size:12px;color:var(--muted)}
-.admin-prod-actions{display:flex;gap:8px}
-.admin-prod-actions button{width:36px;height:36px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;transition:all 0.3s}
-.admin-prod-actions button:hover{background:var(--gold);color:#000}
-.hint{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.6}
-.hint code{background:rgba(212,175,55,0.1);padding:2px 6px;border-radius:6px;color:var(--gold);font-size:11px}
-.info-box{background:rgba(212,175,55,0.06);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:16px;font-size:13px;line-height:1.8}
-.info-box b{color:var(--gold)}
-.info-box code{background:rgba(212,175,55,0.15);padding:2px 8px;border-radius:6px;color:var(--gold);font-family:'Courier New',monospace}
-.img-count-badge{display:inline-block;background:var(--gold);color:#000;font-size:11px;font-weight:900;padding:3px 10px;border-radius:20px;margin-right:8px}
-.preview-images{display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:8px;margin-top:10px}
-.preview-images img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:8px;border:1px solid var(--border)}
+let PRODUCTS = [...DEFAULT_PRODUCTS];
+let adminAuthed = false;
 
-.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--card);border:1px solid var(--border);padding:14px 24px;border-radius:50px;color:var(--text);font-weight:700;font-size:14px;z-index:3000;transition:transform 0.5s cubic-bezier(0.68,-0.55,0.265,1.55);box-shadow:0 20px 50px rgba(0,0,0,0.5)}
-.toast.show{transform:translateX(-50%) translateY(0)}
-
-@media(max-width:768px){
-  .dash{padding:14px}
-  .size-row{grid-template-columns:60px 1fr 36px}
-  .admin-tabs{overflow-x:auto;flex-wrap:nowrap;padding-bottom:6px}
-  .admin-tab{white-space:nowrap}
-}
-</style>
-</head>
-<body>
-
-<div class="login-wrap" id="loginWrap">
-  <div class="login-box">
-    <div class="logo">Aya Boutique</div>
-    <div class="sub">ADMIN PANEL</div>
-    <h2>🔒 دخول الإدارة</h2>
-    <input type="password" class="pw-input" id="pwInput" placeholder="• • • • •" autocomplete="off" inputmode="numeric">
-    <button class="login-btn" onclick="tryLogin()">دخول</button>
-    <div class="login-error" id="loginError"></div>
-    <p class="login-hint">كلمة السر الافتراضية: <code>12345</code></p>
-  </div>
-</div>
-
-<div class="dash" id="dash">
-  <div class="dash-head">
-    <div class="brand">⚙ لوحة الإدارة — Aya Boutique</div>
-    <div class="actions">
-      <a class="admin-btn ghost" href="index.html" target="_blank">🌐 عرض الموقع</a>
-      <button class="admin-btn danger" onclick="logout()">🚪 خروج</button>
-    </div>
-  </div>
-
-  <div class="admin-inner">
-    <div id="fbWarn" style="display:none;background:rgba(255,92,92,0.1);border:1px solid rgba(255,92,92,0.3);color:#ff8f8f;padding:14px;border-radius:12px;font-size:13px;margin-bottom:16px;line-height:1.7">
-      ⚠ <b>Firebase غير متصل!</b> تأكد من تفعيل Firestore وضبط القواعد.
-    </div>
-
-    <div class="admin-tabs">
-      <button class="admin-tab active" onclick="switchTab('add',this)">➕ إضافة صنف</button>
-      <button class="admin-tab" onclick="switchTab('list',this)">📦 الأصناف</button>
-      <button class="admin-tab" onclick="switchTab('hero',this)">🖼 خلفية الرئيسية</button>
-      <button class="admin-tab" onclick="switchTab('orders',this)">📋 الطلبات</button>
-      <button class="admin-tab" onclick="switchTab('settings',this)">🔑 الإعدادات</button>
-    </div>
-
-    <!-- ADD -->
-    <div id="tab-add">
-      <div class="admin-card">
-        <h3>📸 صور الصنف من مكتبة الصور</h3>
-
-        <div class="info-box">
-          📖 <b>كيف تضيف صور الصنف؟</b><br>
-          1. افتح ملف <code>images-catalog.js</code> على جهازك<br>
-          2. أضف مدخل جديد:<br>
-          <code style="display:block;margin:8px 0;padding:10px;white-space:pre;overflow-x:auto">"my-dress": [
-  "رابط-صورة-1",
-  "رابط-صورة-2"
-]</code>
-          3. احفظ الملف وارفعه على GitHub<br>
-          4. هنا اكتب <b>نفس المعرّف</b> واختر <b>عدد الصور</b>
-        </div>
-
-        <label class="admin-label">معرّف الصور (imageKey) *</label>
-        <input class="admin-input" id="pImageKey" placeholder="مثال: dress-royal" oninput="previewImages()">
-        <p class="hint">⚠️ نفس المعرّف اللي كتبته في <code>images-catalog.js</code></p>
-
-        <label class="admin-label">عدد الصور المعروضة *</label>
-        <input class="admin-input" id="pImageCount" type="number" min="1" value="1" oninput="previewImages()">
-        <p class="hint">مثلاً: 4 → يعرض أول 4 صور من المصفوفة</p>
-
-        <div id="imgPreviewBox" style="display:none">
-          <label class="admin-label">معاينة الصور:</label>
-          <div class="preview-images" id="imgPreviewList"></div>
-        </div>
-      </div>
-
-      <div class="admin-card">
-        <h3>✏ بيانات الصنف</h3>
-        <label class="admin-label">اسم الصنف *</label>
-        <input class="admin-input" id="pName" placeholder="فستان سواريه ملكي">
-        <label class="admin-label">السعر (د.ل) *</label>
-        <input class="admin-input" id="pPrice" type="number" placeholder="450">
-        <label class="admin-label">وصف قصير</label>
-        <textarea class="admin-input" id="pDesc" placeholder="فستان فاخر بتصميم راقي..." rows="2"></textarea>
-      </div>
-
-      <div class="admin-card">
-        <h3>📏 المقاسات والكميات</h3>
-        <p class="hint" style="margin-bottom:14px">أضف/احذف مقاسات في أي وقت — التعديلات تُطبَّق فوراً</p>
-        <div class="sizes-editor" id="sizesEditor"></div>
-        <button class="add-size-btn" onclick="addSizeRow()">+ إضافة مقاس</button>
-
-        <button class="admin-btn primary" style="width:100%;margin-top:10px" onclick="saveProduct()">💾 حفظ الصنف</button>
-        <p class="hint" id="editHint" style="display:none;color:var(--gold)">✎ وضع التعديل — احفظ لتحديث الصنف</p>
-      </div>
-    </div>
-
-    <!-- LIST -->
-    <div id="tab-list" style="display:none">
-      <div class="admin-card">
-        <h3>الأصناف (<span id="prodCount">0</span>)</h3>
-        <div id="adminProductsList"><p class="hint">جاري التحميل...</p></div>
-      </div>
-    </div>
-
-    <!-- HERO -->
-    <div id="tab-hero" style="display:none">
-      <div class="admin-card">
-        <h3>🖼 خلفية الصفحة الرئيسية</h3>
-        <p class="hint" style="margin-bottom:14px">ضع رابط صورة الخلفية (من Unsplash أو أي رابط مباشر)</p>
-        <label class="admin-label">رابط صورة الخلفية</label>
-        <input class="admin-input" id="heroImageInput" placeholder="https://...">
-        <label class="admin-label">النص تحت الاسم</label>
-        <input class="admin-input" id="heroTaglineInput" placeholder="فساتين فاخرة بتصاميم عصرية...">
-        <div id="heroPreviewWrap"></div>
-        <button class="admin-btn primary" style="width:100%;margin-top:8px" onclick="saveHeroSettings()">💾 حفظ التغييرات</button>
-      </div>
-    </div>
-
-    <!-- ORDERS -->
-    <div id="tab-orders" style="display:none">
-      <div class="admin-card">
-        <h3>📋 سجل الطلبات (<span id="ordersCount">0</span>)</h3>
-        <div id="ordersList"><p class="hint">جاري التحميل...</p></div>
-      </div>
-    </div>
-
-    <!-- SETTINGS -->
-    <div id="tab-settings" style="display:none">
-      <div class="admin-card">
-        <h3>🔑 إعدادات تيليجرام</h3>
-        <input class="admin-input" id="tgToken" placeholder="Bot Token">
-        <input class="admin-input" id="tgChatId" placeholder="Chat ID">
-        <button class="admin-btn primary" style="width:100%" onclick="saveTelegram()">💾 حفظ</button>
-        <button class="admin-btn ghost" style="width:100%;margin-top:8px" onclick="testTelegram()">🧪 اختبار الإرسال</button>
-        <p class="hint" id="tgStatus"></p>
-      </div>
-      <div class="admin-card">
-        <h3>🔒 كلمة سر الإدارة</h3>
-        <p class="hint" style="margin-bottom:12px">الحالية: <code id="curPw">12345</code></p>
-        <input class="admin-input" id="curPwInput" placeholder="كلمة السر الحالية" type="password">
-        <input class="admin-input" id="newPwInput" placeholder="كلمة السر الجديدة" type="password">
-        <input class="admin-input" id="newPwInput2" placeholder="تأكيد كلمة السر" type="password">
-        <button class="admin-btn primary" style="width:100%" onclick="changePassword()">💾 تغيير كلمة السر</button>
-      </div>
-      <div class="admin-card">
-        <h3>🗑 إجراءات خطيرة</h3>
-        <button class="admin-btn danger" style="width:100%;margin-bottom:8px" onclick="clearOrders()">حذف كل الطلبات</button>
-        <button class="admin-btn danger" style="width:100%" onclick="resetAll()">حذف كل الأصناف</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<script type="module">
-import { db } from './firebase-config.js';
-import { getImages, getAllIdentifiers, IMAGES_CATALOG } from './images-catalog.js';
-import {
-  collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc,
-  getDoc, setDoc
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-/* ============================================================
-   PASSWORD
-============================================================ */
-const DEFAULT_PASSWORD = '12345';
-let ADMIN_PASSWORD = DEFAULT_PASSWORD;
-
-async function loadPassword(){
-  try{
-    const snap = await getDoc(doc(db, 'settings', 'admin'));
-    if(snap.exists() && snap.data().password){
-      ADMIN_PASSWORD = snap.data().password;
-    } else {
-      await setDoc(doc(db, 'settings', 'admin'), { password: DEFAULT_PASSWORD });
-      ADMIN_PASSWORD = DEFAULT_PASSWORD;
-    }
-    document.getElementById('curPw').textContent = ADMIN_PASSWORD;
-  }catch(e){
-    ADMIN_PASSWORD = DEFAULT_PASSWORD;
-    document.getElementById('curPw').textContent = DEFAULT_PASSWORD;
-  }
-}
-await loadPassword();
-
-window.tryLogin = function(){
-  const pw = document.getElementById('pwInput').value.trim();
-  if(pw === ADMIN_PASSWORD){
-    sessionStorage.setItem('aya_admin', 'ok');
-    document.getElementById('loginWrap').style.display = 'none';
-    document.getElementById('dash').classList.add('show');
-    initDashboard();
-  } else {
-    document.getElementById('loginError').textContent = '⚠ كلمة السر غير صحيحة';
-    document.getElementById('pwInput').value = '';
-  }
-}
-window.logout = function(){
-  sessionStorage.removeItem('aya_admin');
-  location.reload();
-}
-document.getElementById('pwInput').addEventListener('keypress', e=>{
-  if(e.key === 'Enter') tryLogin();
+// زر الإدارة مخفي في HTML، نظهره فقط إذا كان المستخدم الحالي هو الأدمن
+document.addEventListener('DOMContentLoaded', () => {
+  // مراقبة حالة الدخول (يفترض أن app.js يضع currentUser في النافذة)
+  // سنبقي الزر مخفياً حتى يتم تسجيل الدخول كأدمن (من خلال فحص محلي)
+  // لتبسيط الأمر: نضع زر الإدارة في مكانه، وعند الضغط عليه يطلب تسجيل الدخول
 });
-if(sessionStorage.getItem('aya_admin') === 'ok'){
-  document.getElementById('loginWrap').style.display = 'none';
-  document.getElementById('dash').classList.add('show');
-  initDashboard();
-}
 
-/* ============================================================
-   STATE
-============================================================ */
-let products = [];
-let orders = [];
-let settings = {};
-let editingId = null;
+// فتح لوحة الإدارة
+$('admin-btn').onclick = (e) => {
+  e.preventDefault();
+  openAdmin();
+};
 
-const fmt = n => Number(n).toLocaleString('ar-LY') + ' د.ل';
-function toast(msg){
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  clearTimeout(t._t);
-  t._t = setTimeout(()=>t.classList.remove('show'), 2500);
-}
-
-/* ============================================================
-   INIT
-============================================================ */
-function initDashboard(){
-  onSnapshot(collection(db, 'products'),
-    snap=>{
-      document.getElementById('fbWarn').style.display = 'none';
-      products = snap.docs.map(d=>({ id:d.id, ...d.data() }));
-      products.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
-      renderAdminProducts();
-    },
-    err=>{
-      document.getElementById('fbWarn').style.display = 'block';
-      document.getElementById('adminProductsList').innerHTML = '<p class="hint" style="color:#ff5c5c">⚠ تعذّر الاتصال</p>';
-    }
-  );
-
-  onSnapshot(collection(db, 'orders'),
-    snap=>{
-      orders = snap.docs.map(d=>({ id:d.id, ...d.data() }));
-      orders.sort((a,b)=>(b.num||0)-(a.num||0));
-      renderOrders();
-    },
-    err=>console.warn('orders', err)
-  );
-
-  onSnapshot(doc(db, 'settings', 'site'),
-    snap=>{
-      settings = snap.exists() ? snap.data() : {};
-      loadHeroAdmin();
-    },
-    err=>console.warn('settings', err)
-  );
-
-  onSnapshot(doc(db, 'settings', 'telegram'),
-    snap=>{
-      const tg = snap.exists() ? snap.data() : {};
-      document.getElementById('tgToken').value = tg.token || '';
-      document.getElementById('tgChatId').value = tg.chatId || '';
-    },
-    err=>console.warn('telegram', err)
-  );
-
-  resetForm();
-}
-
-window.switchTab = function(t, el){
-  document.querySelectorAll('.admin-tab').forEach(b=>b.classList.remove('active'));
-  el.classList.add('active');
-  ['add','list','hero','orders','settings'].forEach(x=>{
-    const e = document.getElementById('tab-'+x);
-    if(e) e.style.display = x===t ? '' : 'none';
-  });
-}
-
-/* ============================================================
-   IMAGE PREVIEW
-============================================================ */
-window.previewImages = function(){
-  const key = document.getElementById('pImageKey').value.trim();
-  const count = Number(document.getElementById('pImageCount').value) || 1;
-  const box = document.getElementById('imgPreviewBox');
-  const list = document.getElementById('imgPreviewList');
-  if(!key){
-    box.style.display = 'none';
-    return;
-  }
-  const imgs = getImages(key, count);
-  if(imgs.length === 0){
-    box.style.display = 'block';
-    list.innerHTML = '<p class="hint" style="color:#ff5c5c">⚠ المعرّف غير موجود في images-catalog.js</p>';
-    return;
-  }
-  box.style.display = 'block';
-  list.innerHTML = imgs.map(u=>`<img src="${u}" onerror="this.style.opacity=0.3">`).join('');
-}
-
-/* ============================================================
-   SIZE ROWS
-============================================================ */
-window.addSizeRow = function(size='', qty=''){
-  const wrap = document.getElementById('sizesEditor');
-  const row = document.createElement('div');
-  row.className = 'size-row';
-  row.innerHTML = `
-    <input class="admin-input" placeholder="S" value="${size}" data-size>
-    <input class="admin-input" type="number" placeholder="الكمية" value="${qty}" data-qty>
-    <button class="size-del" onclick="this.parentElement.remove()">×</button>`;
-  wrap.appendChild(row);
-}
-
-/* ============================================================
-   SAVE PRODUCT
-============================================================ */
-window.saveProduct = async function(){
-  const name = document.getElementById('pName').value.trim();
-  const price = Number(document.getElementById('pPrice').value);
-  const desc = document.getElementById('pDesc').value.trim();
-  const imageKey = document.getElementById('pImageKey').value.trim();
-  const imageCount = Number(document.getElementById('pImageCount').value) || 1;
-
-  if(!name || !price){ toast('⚠ اكمل الاسم والسعر'); return; }
-  if(!imageKey){ toast('⚠ اكتب معرّف الصور (imageKey)'); return; }
-
-  const testImgs = getImages(imageKey, imageCount);
-  if(testImgs.length === 0){
-    toast('⚠ المعرّف غير موجود في images-catalog.js');
-    return;
-  }
-
-  const sizes = [];
-  document.querySelectorAll('#sizesEditor .size-row').forEach(r=>{
-    const s = r.querySelector('[data-size]').value.trim();
-    const q = Number(r.querySelector('[data-qty]').value)||0;
-    if(s) sizes.push({size:s, qty:q});
-  });
-  if(sizes.length === 0){ toast('⚠ أضف مقاس واحد على الأقل'); return; }
-
-  const data = { name, price, desc, imageKey, imageCount, sizes, updatedAt: Date.now() };
-
-  try{
-    if(editingId){
-      await updateDoc(doc(db, 'products', editingId), data);
-      toast('✓ تم تحديث الصنف');
-      editingId = null;
-    } else {
-      data.createdAt = Date.now();
-      await addDoc(collection(db, 'products'), data);
-      toast('✓ تمت إضافة الصنف');
-    }
-    resetForm();
-  }catch(e){
-    console.error(e);
-    toast('⚠ فشل الحفظ');
-  }
-}
-
-function resetForm(){
-  document.getElementById('pName').value = '';
-  document.getElementById('pPrice').value = '';
-  document.getElementById('pDesc').value = '';
-  document.getElementById('pImageKey').value = '';
-  document.getElementById('pImageCount').value = '1';
-  document.getElementById('imgPreviewBox').style.display = 'none';
-  document.getElementById('sizesEditor').innerHTML = '';
-  addSizeRow('S', 5); addSizeRow('M', 5); addSizeRow('L', 3);
-  editingId = null;
-  document.getElementById('editHint').style.display = 'none';
-}
-
-/* ============================================================
-   ADMIN PRODUCTS LIST
-============================================================ */
-function renderAdminProducts(){
-  document.getElementById('prodCount').textContent = products.length;
-  const wrap = document.getElementById('adminProductsList');
-  if(products.length === 0){
-    wrap.innerHTML = '<p class="hint">لا توجد أصناف — أضف أول صنف</p>'; return;
-  }
-  wrap.innerHTML = products.map(p=>{
-    const sizes = p.sizes || [];
-    const total = sizes.reduce((a,s)=>a+Number(s.qty||0),0);
-    const imgs = getImages(p.imageKey, 1);
-    const img = imgs[0] || '';
-    return `<div class="admin-prod">
-      <img src="${img}" alt="" onerror="this.style.opacity=0.3">
-      <div class="admin-prod-info">
-        <h4>${p.name} <span class="img-count-badge">${p.imageCount||1} 🖼</span></h4>
-        <p>${fmt(p.price)} — ${sizes.length} مقاس — إجمالي: ${total}</p>
-        <p style="color:var(--gold);font-size:11px">Key: ${p.imageKey}</p>
+function openAdmin() {
+  $('admin-overlay').classList.add('open');
+  if (adminAuthed) {
+    renderAdminTable();
+  } else {
+    $('admin-body').innerHTML = `
+      <div class="admin-login">
+        <h3>دخول الإدارة</h3>
+        <input id="admin-user" placeholder="اسم المستخدم">
+        <input id="admin-pass" type="password" placeholder="كلمة المرور">
+        <div id="admin-err" class="err" style="color:var(--err);font-size:12px;min-height:16px"></div>
+        <button class="admin-btn primary" id="admin-login-btn" style="width:100%">دخول</button>
       </div>
-      <div class="admin-prod-actions">
-        <button onclick="editProduct('${p.id}')" title="تعديل">✏</button>
-        <button onclick="deleteProduct('${p.id}')" title="حذف">🗑</button>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-window.editProduct = function(id){
-  const p = products.find(x=>x.id===id);
-  if(!p) return;
-  editingId = id;
-  document.getElementById('pName').value = p.name;
-  document.getElementById('pPrice').value = p.price;
-  document.getElementById('pDesc').value = p.desc || '';
-  document.getElementById('pImageKey').value = p.imageKey || '';
-  document.getElementById('pImageCount').value = p.imageCount || 1;
-  previewImages();
-  document.getElementById('sizesEditor').innerHTML = '';
-  (p.sizes||[]).forEach(s=>addSizeRow(s.size, s.qty));
-  document.getElementById('editHint').style.display = 'block';
-  switchTab('add', document.querySelectorAll('.admin-tab')[0]);
-  window.scrollTo({top:0, behavior:'smooth'});
-}
-
-window.deleteProduct = async function(id){
-  if(!confirm('تأكيد حذف الصنف؟')) return;
-  try{
-    await deleteDoc(doc(db, 'products', id));
-    toast('🗑 تم الحذف');
-  }catch(e){ toast('⚠ فشل الحذف'); }
-}
-
-/* ============================================================
-   HERO
-============================================================ */
-window.loadHeroAdmin = function(){
-  document.getElementById('heroImageInput').value = settings.heroImage || '';
-  document.getElementById('heroTaglineInput').value = settings.heroTagline || '';
-  renderHeroPreview();
-}
-window.renderHeroPreview = function(){
-  const url = document.getElementById('heroImageInput').value.trim();
-  const w = document.getElementById('heroPreviewWrap');
-  if(url) w.innerHTML = `<div style="aspect-ratio:16/9;border-radius:12px;overflow:hidden;border:1px solid var(--border);margin-top:10px"><img src="${url}" style="width:100%;height:100%;object-fit:cover"></div>`;
-  else w.innerHTML = '';
-}
-window.saveHeroSettings = async function(){
-  const heroImage = document.getElementById('heroImageInput').value.trim();
-  const heroTagline = document.getElementById('heroTaglineInput').value.trim();
-  try{
-    await setDoc(doc(db, 'settings', 'site'), { heroImage, heroTagline }, { merge: true });
-    toast('✓ تم الحفظ');
-  }catch(e){ toast('⚠ فشل'); }
-}
-
-/* ============================================================
-   ORDERS
-============================================================ */
-function renderOrders(){
-  document.getElementById('ordersCount').textContent = orders.length;
-  const w = document.getElementById('ordersList');
-  if(orders.length === 0){
-    w.innerHTML = '<p class="hint">لا توجد طلبات بعد</p>'; return;
+    `;
+    $('admin-login-btn').onclick = () => {
+      const u = $('admin-user').value.trim();
+      const p = $('admin-pass').value;
+      if (u === ADMIN_USER && p === ADMIN_PASS) {
+        adminAuthed = true;
+        renderAdminTable();
+      } else {
+        $('admin-err').textContent = 'بيانات غير صحيحة';
+      }
+    };
   }
-  w.innerHTML = orders.map(o=>`
-    <div class="admin-prod" style="flex-direction:column;align-items:stretch;gap:10px">
-      <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;align-items:center">
-        <b style="color:var(--gold);font-size:15px">${o.id || 'AYA-'+String(o.num||0).padStart(5,'0')}</b>
-        <span style="font-size:11px;color:var(--muted)">${o.dateStr || ''}</span>
-        <button class="admin-btn danger" style="padding:6px 12px;font-size:12px" onclick="deleteOrder('${o.id}')">حذف</button>
-      </div>
-      <div style="font-size:13px">
-        👤 ${o.name} — 📞 ${o.phone} — 🏙 ${o.city}
-        ${o.notes?`<br>📝 ${o.notes}`:''}
-      </div>
-      <div style="font-size:12px;color:var(--muted);background:rgba(0,0,0,0.2);padding:10px;border-radius:10px">
-        ${(o.items||[]).map(it=>`• ${it.name} <b>(${it.size})</b> × ${it.qty} = ${it.qty*it.price} د.ل`).join('<br>')}
-      </div>
-      <div style="color:var(--gold);font-weight:900">الإجمالي: ${fmt(o.total||0)}</div>
+}
+
+$('admin-close').onclick = () => $('admin-overlay').classList.remove('open');
+
+function renderAdminTable() {
+  $('admin-body').innerHTML = `
+    <div class="admin-actions">
+      <button class="admin-btn" id="admin-save">💾 حفظ الكميات</button>
+      <button class="admin-btn danger" id="admin-logout">خروج</button>
     </div>
+    <div style="overflow:auto">
+      <table class="admin-table">
+        <thead><tr>
+          <th>#</th><th>الصورة</th><th>الاسم</th><th>الفئة</th>
+          <th style="min-width:200px">المخزون لكل مقاس</th>
+        </tr></thead>
+        <tbody id="admin-tbody"></tbody>
+      </table>
+    </div>
+  `;
+  
+  const tbody = $('admin-tbody');
+  tbody.innerHTML = PRODUCTS.map((p, i) => `
+    <tr>
+      <td>${i + 1}</td>
+      <td><img src="${p.imageUrl || ''}" style="width:50px;height:50px;object-fit:cover;border:1px solid var(--line)"></td>
+      <td>${p.name}</td>
+      <td>${p.category || ''}</td>
+      <td>
+        <div class="stock-cell">
+          ${SIZES.map(s => `<div><input data-id="${p.id}" data-size="${s}" type="number" min="0" value="${p.stock?.[s] || 0}"><div class="stock-hint">${s}</div></div>`).join('')}
+        </div>
+      </td>
+    </tr>
   `).join('');
-}
-window.deleteOrder = async function(id){
-  if(!confirm('حذف الطلب؟')) return;
-  try{ await deleteDoc(doc(db, 'orders', id)); toast('🗑 تم'); }
-  catch(e){ toast('⚠ فشل'); }
-}
-window.clearOrders = async function(){
-  if(!confirm('حذف كل الطلبات؟')) return;
-  try{
-    for(const o of orders){ await deleteDoc(doc(db, 'orders', o.id)); }
-    toast('🗑 تم حذف الكل');
-  }catch(e){ toast('⚠ فشل'); }
-}
 
-/* ============================================================
-   TELEGRAM
-============================================================ */
-window.saveTelegram = async function(){
-  const token = document.getElementById('tgToken').value.trim();
-  const chatId = document.getElementById('tgChatId').value.trim();
-  try{
-    await setDoc(doc(db, 'settings', 'telegram'), { token, chatId });
-    toast('✓ تم الحفظ');
-  }catch(e){ toast('⚠ فشل'); }
-}
-window.testTelegram = async function(){
-  const token = document.getElementById('tgToken').value.trim();
-  const chatId = document.getElementById('tgChatId').value.trim();
-  const st = document.getElementById('tgStatus');
-  if(!token || !chatId){ st.textContent = '⚠ املأ البيانات'; return; }
-  st.textContent = '⏳ جاري الإرسال...';
-  try{
-    const r = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({chat_id: chatId, text:'✅ اختبار ناجح من Aya Boutique'})
+  $('admin-save').onclick = () => {
+    const inputs = tbody.querySelectorAll('input[data-id]');
+    inputs.forEach(input => {
+      const id = input.dataset.id;
+      const size = input.dataset.size;
+      const val = Math.max(0, Number(input.value) || 0);
+      const p = PRODUCTS.find(x => x.id === id);
+      if (p) { p.stock[size] = val; }
     });
-    const d = await r.json();
-    st.textContent = d.ok ? '✓ تم الإرسال بنجاح' : '⚠ فشل: ' + (d.description||'');
-  }catch(e){ st.textContent = '⚠ خطأ اتصال'; }
-}
+    // حفظ التغييرات في localStorage (للتجربة)
+    localStorage.setItem('alyasimin-stock', JSON.stringify(PRODUCTS));
+    alert('تم حفظ الكميات');
+  };
 
-/* ============================================================
-   PASSWORD CHANGE
-============================================================ */
-window.changePassword = async function(){
-  const cur = document.getElementById('curPwInput').value.trim();
-  const np = document.getElementById('newPwInput').value.trim();
-  const np2 = document.getElementById('newPwInput2').value.trim();
-  if(cur !== ADMIN_PASSWORD){ toast('⚠ كلمة السر الحالية غير صحيحة'); return; }
-  if(!np || np.length < 4){ toast('⚠ قصيرة جداً'); return; }
-  if(np !== np2){ toast('⚠ غير متطابقتين'); return; }
-  try{
-    await setDoc(doc(db, 'settings', 'admin'), { password: np });
-    ADMIN_PASSWORD = np;
-    document.getElementById('curPw').textContent = np;
-    document.getElementById('curPwInput').value = '';
-    document.getElementById('newPwInput').value = '';
-    document.getElementById('newPwInput2').value = '';
-    toast('✓ تم تغيير كلمة السر');
-  }catch(e){ toast('⚠ فشل'); }
+  $('admin-logout').onclick = () => {
+    adminAuthed = false;
+    openAdmin();
+  };
 }
-
-/* ============================================================
-   RESET
-============================================================ */
-window.resetAll = async function(){
-  if(!confirm('حذف كل الأصناف؟ لا يمكن التراجع!')) return;
-  try{
-    for(const p of products){ await deleteDoc(doc(db, 'products', p.id)); }
-    toast('🗑 تم حذف الكل');
-  }catch(e){ toast('⚠ فشل'); }
-}
-
-</script>
-</body>
-</html>
