@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ALYASIMIN ABAYA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="page">
+  <header>
+    <div class="r1">
+      <a class="brand wide" href="#" aria-label="ALYASIMIN ABAYA">ALYASIMIN ABAYA</a>
+      <nav class="tabs wide">
+        <a class="on" href="#">المنصة</a>
+        <a href="#" id="nav-shop">المتجر</a>
+      </nav>
+      <div class="acct wide">
+        <button id="auth-open">دخول</button>
+        <a href="#" id="nav-cart">السلة (<span id="cart">0</span>)</a>
+        <a href="#" id="admin-btn" style="display:none">الإدارة</a>
+      </div>
+    </div>
+  </header>
+  <main>
+    <section class="stage" id="stage">
+      <div class="line" id="line"></div>
+      <div class="intro">
+        <h2 class="wide">ربيع صيف 2027</h2>
+        <p>دراسة في النعومة والقوة. مجموعة الموسم الجديد من ALYASIMIN ABAYA.</p>
+      </div>
+    </section>
+    <aside class="rail" id="rail"></aside>
+  </main>
+</div>
+
+<dialog class="commerce" id="commerce">
+  <div class="panel-head"><h2 class="wide" id="panel-title">ALYASIMIN ABAYA</h2><button class="panel-close" id="panel-close" aria-label="إغلاق">×</button></div>
+  <div class="panel-body" id="panel-body"></div>
+</dialog>
+
+<div class="toast" id="toast"><span id="toast-message"></span><button id="toast-cart">عرض السلة</button></div>
+
+<div class="auth-modal" id="auth-modal">
+  <div class="auth-box">
+    <button class="close-modal" id="auth-close-btn">×</button>
+    <div class="tabs-auth">
+      <button data-auth-tab="login" class="active">تسجيل الدخول</button>
+      <button data-auth-tab="signup">حساب جديد</button>
+    </div>
+    <div id="auth-login-view">
+      <h2>مرحباً بعودتك</h2>
+      <p class="sub">سجّلي دخولك بالبريد الإلكتروني.</p>
+      <label>البريد الإلكتروني<input id="login-email" type="email"></label>
+      <label>كلمة المرور<input id="login-pass" type="password"></label>
+      <div class="err" id="login-err"></div>
+      <button class="primary wide" id="login-btn" style="margin-top:14px">دخول</button>
+      <span class="link" id="to-signup">ليس لديك حساب؟ سجّلي الآن</span>
+    </div>
+    <div id="auth-signup-view" class="hidden">
+      <h2>إنشاء حساب جديد</h2>
+      <p class="sub">أدخلي بياناتك. سيصلك كود تحقق (سيتم إرساله لك عبر الإدارة).</p>
+      <label>الاسم الكامل<input id="signup-name"></label>
+      <label>البريد الإلكتروني<input id="signup-email" type="email"></label>
+      <label>رقم الهاتف<input id="signup-phone" type="tel" placeholder="0912345678"></label>
+      <label>كلمة المرور<input id="signup-pass" type="password" placeholder="6 أحرف على الأقل"></label>
+      <div class="err" id="signup-err"></div>
+      <button class="primary wide" id="signup-btn" style="margin-top:14px">إنشاء الحساب وإرسال الكود</button>
+      <span class="link" id="to-login">لديك حساب؟ سجّلي الدخول</span>
+    </div>
+    <div id="auth-verify-view" class="hidden">
+      <h2>تأكيد الحساب</h2>
+      <p class="sub">أدخلي كود التحقق المكون من 6 أرقام الذي وصلك.</p>
+      <label>كود التحقق<input id="verify-code" type="text" maxlength="6" style="text-align:center; letter-spacing:5px; font-size:20px"></label>
+      <div class="err" id="verify-err"></div>
+      <button class="primary wide" id="verify-btn" style="margin-top:14px">تأكيد الحساب</button>
+      <button class="secondary wide" id="resend-btn">إعادة إرسال الكود</button>
+    </div>
+  </div>
+</div>
+
+<div class="admin-overlay" id="admin-overlay">
+  <div class="admin-panel">
+    <div class="admin-head">
+      <h2>إدارة المخزون</h2>
+      <button class="panel-close" id="admin-close" aria-label="إغلاق">×</button>
+    </div>
+    <div class="admin-body" id="admin-body"></div>
+  </div>
+</div>
+
+<script type="module" src="app.js"></script>
+<script type="module" src="admin.js"></script>
+</body>
+</html>
