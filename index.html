@@ -57,8 +57,8 @@
     <!-- Login View -->
     <div id="auth-login-view">
       <h2>مرحباً بعودتك</h2>
-      <p class="sub">سجّلي دخولك باليوزر أو الإيميل.</p>
-      <label>اليوزر أو البريد الإلكتروني<input id="login-user" type="text"></label>
+      <p class="sub">سجّلي دخولك بالبريد الإلكتروني.</p>
+      <label>البريد الإلكتروني<input id="login-email" type="email"></label>
       <label>كلمة المرور<input id="login-pass" type="password"></label>
       <div class="err" id="login-err"></div>
       <button class="primary wide" id="login-btn" style="margin-top:14px">دخول</button>
@@ -68,11 +68,10 @@
     <!-- Signup View -->
     <div id="auth-signup-view" class="hidden">
       <h2>إنشاء حساب جديد</h2>
-      <p class="sub">أدخلي بياناتك لإنشاء حساب. سيصلك كود تحقق على بريدك.</p>
+      <p class="sub">أدخلي بياناتك. سيصلك كود تحقق (سيتم إرساله لك عبر الإدارة).</p>
       <label>الاسم الكامل<input id="signup-name"></label>
       <label>البريد الإلكتروني<input id="signup-email" type="email"></label>
       <label>رقم الهاتف<input id="signup-phone" type="tel" placeholder="0912345678"></label>
-      <label>اسم المستخدم (اليوزر)<input id="signup-username" type="text" placeholder="مثال: tarek_91"></label>
       <label>كلمة المرور<input id="signup-pass" type="password" placeholder="6 أحرف على الأقل"></label>
       <div class="err" id="signup-err"></div>
       <button class="primary wide" id="signup-btn" style="margin-top:14px">إنشاء الحساب وإرسال الكود</button>
@@ -82,7 +81,7 @@
     <!-- Verification View -->
     <div id="auth-verify-view" class="hidden">
       <h2>تأكيد الحساب</h2>
-      <p class="sub">أدخلي كود التحقق المكون من 6 أرقام الذي وصلك على البريد الإلكتروني.</p>
+      <p class="sub">أدخلي كود التحقق المكون من 6 أرقام الذي وصلك.</p>
       <label>كود التحقق<input id="verify-code" type="text" maxlength="6" style="text-align:center; letter-spacing:5px; font-size:20px"></label>
       <div class="err" id="verify-err"></div>
       <button class="primary wide" id="verify-btn" style="margin-top:14px">تأكيد الحساب</button>
@@ -98,13 +97,10 @@
       <h2>إدارة المخزون</h2>
       <button class="panel-close" id="admin-close" aria-label="إغلاق">×</button>
     </div>
-    <div class="admin-body" id="admin-body">
-      <!-- Admin content here -->
-    </div>
+    <div class="admin-body" id="admin-body"></div>
   </div>
 </div>
 
 <script type="module" src="app.js"></script>
-<script type="module" src="admin.js"></script>
 </body>
 </html>
