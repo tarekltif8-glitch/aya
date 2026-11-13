@@ -6,39 +6,45 @@ const TG_CHAT_ID = '8562530371';
 const SIZES = ['XS','S','M','L','XL'];
 const $ = id => document.getElementById(id);
 
-let PRODUCTS = [...DEFAULT_PRODUCTS];
+let PRODUCTS = JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
 let bag = [];
 let saved = new Set();
 let currentUser = null;
 let pendingCheckout = false;
+let generatedCode = null;
+let pendingVerifyEmail = null;
 
 const money = n => new Intl.NumberFormat('ar-LY',{style:'currency',currency:'LYD',maximumFractionDigits:0}).format(n) + ' د.ل';
 
-// --- الصور الافتراضية للشخصيات ---
-const MODEL_IMAGE = "https://images.unsplash.com/photo-1618220179428-22790b46a0eb?q=80&w=600";
-
-// --- بناء واجهة المتجر ---
+// --- بناء المتجر ---
 function buildStore() {
+  // عرض الشخصيات في المنصة
   const line = $('line');
-  const rail = $('rail');
-  
-  // عرض الشخصيات (كل صنف له شخصية)
   line.innerHTML = '';
-  PRODUCTS.forEach((p, i) => {
-    const div = document.createElement('div');
-    div.className = 'stage-person';
-    div.style.cssText = `
-      width: 220px; height: 400px; margin: 0 10px; 
-      background: url('${p.imageUrl || MODEL_IMAGE}') center/cover;
-      border-radius: 10px; position: relative;
-      border: 2px solid #e6ebf0;
-    `;
-    // عرض اسم الصنف فوق الشخصية
-    div.innerHTML = `<div style="position:absolute; bottom:0; right:0; left:0; background:rgba(0,0,0,0.6); color:#fff; padding:10px; text-align:center; font-weight:bold;">${p.name}</div>`;
-    line.appendChild(div);
-  });
+  line.style.display = 'flex';
+  line.style.alignItems = 'center';
+  line.style.justifyContent = 'center';
+  line.style.gap = '20px';
+  line.style.padding = '20px';
+  
+  if (PRODUCTS.length === 0) {
+    line.innerHTML = '<p style="color:#737b86;">لا توجد أصناف حالياً.</p>';
+  } else {
+    PRODUCTS.forEach(p => {
+      const div = document.createElement('div');
+      div.style.cssText = `
+        width: 220px; height: 400px; 
+        background: url('${p.imageUrl}') center/cover;
+        border-radius: 10px; position: relative;
+        border: 2px solid #e6ebf0;
+      `;
+      div.innerHTML = `<div style="position:absolute; bottom:0; right:0; left:0; background:rgba(0,0,0,0.6); color:#fff; padding:10px; text-align:center; font-weight:bold;">${p.name}</div>`;
+      line.appendChild(div);
+    });
+  }
 
-  // عرض بطاقات الأصناف
+  // عرض بطاقات الأصناف في القائمة الجانبية
+  const rail = $('rail');
   rail.innerHTML = '';
   if (PRODUCTS.length === 0) {
     rail.innerHTML = '<p style="text-align:center; padding:20px; color:#737b86;">لا توجد أصناف حالياً.</p>';
@@ -46,13 +52,12 @@ function buildStore() {
   }
 
   PRODUCTS.forEach(p => {
-    const img = p.imageUrl || MODEL_IMAGE;
     const card = document.createElement('article');
     card.className = 'card';
     card.innerHTML = `
       <div style="position:relative">
         <button class="fav" data-id="${p.id}"><svg viewBox="0 0 24 24"><path d="M12 20S3.5 15 3.5 9A4.6 4.6 0 0 1 12 6.6 4.6 4.6 0 0 1 20.5 9C20.5 15 12 20 12 20Z"/></svg></button>
-        <div class="shot" data-id="${p.id}"><img src="${img}" alt="${p.name}"></div>
+        <div class="shot" data-id="${p.id}"><img src="${p.imageUrl}" alt="${p.name}"></div>
       </div>
       <div class="meta">
         <h3>${p.name}</h3>
@@ -63,16 +68,14 @@ function buildStore() {
     rail.appendChild(card);
   });
 
-  // إعادة ربط الأحداث
   attachStoreEvents();
   persistCart();
 }
 
-// --- ربط الأحداث بالمتجر ---
+// --- ربط أحداث المتجر ---
 function attachStoreEvents() {
   const rail = $('rail');
   
-  // السلة (حفظ، إضافة، عرض)
   rail.addEventListener('click', e => {
     const fav = e.target.closest('.fav');
     if (fav) { toggleSave(fav.dataset.id); return; }
@@ -91,7 +94,6 @@ function attachStoreEvents() {
     if (shot) { openProduct(shot.dataset.id); return; }
   });
 
-  // بقية أزرار المتجر
   $('nav-cart').onclick = e => { e.preventDefault(); openCart(); };
   $('nav-shop').onclick = e => { e.preventDefault(); openShop(); };
   $('panel-close').onclick = () => $('commerce').close();
@@ -128,11 +130,10 @@ function panel(title) {
 
 function openProduct(id) {
   const p = PRODUCTS.find(x => x.id === id); if (!p) return;
-  const img = p.imageUrl || MODEL_IMAGE;
   panel('اكتشفي القطعة');
   panelBody.innerHTML = `
     <div class="panel-kicker">${p.category}</div>
-    <div class="panel-image"><img src="${img}" alt="${p.name}"></div>
+    <div class="panel-image"><img src="${p.imageUrl}" alt="${p.name}"></div>
     <h3 class="panel-title">${p.name}</h3>
     <div class="product-price">${money(p.price)}</div>
     <p class="panel-copy">${p.desc || ''}</p>
@@ -147,7 +148,6 @@ function openProduct(id) {
     <button class="primary wide" data-action="product-add" ${Object.values(p.stock || {}).every(v => v < 1) ? 'disabled' : ''}>أضيفي إلى السلة</button>
     <button class="secondary wide" data-action="product-save">${saved.has(p.id) ? 'إزالة من المحفوظات' : 'احفظي هذه القطعة'}</button>
   `;
-  // ربط الأزرار داخل نافذة المنتج
   panelBody.querySelectorAll('.size-option').forEach(btn => {
     btn.onclick = () => {
       panelBody.querySelectorAll('.size-option').forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
@@ -173,9 +173,8 @@ function openCart() {
     <div class="panel-kicker">${bag.reduce((s, r) => s + r.qty, 0)} قطعة</div>
     ${bag.map((row, i) => {
       const p = PRODUCTS.find(x => x.id === row.id); if (!p) return '';
-      const img = p.imageUrl || MODEL_IMAGE;
       return `<article class="cart-row">
-        <div class="cart-shot"><img src="${img}" alt="${p.name}"></div>
+        <div class="cart-shot"><img src="${p.imageUrl}" alt="${p.name}"></div>
         <div>
           <h3>${p.name}</h3>
           <p class="row-price">${money(p.price * row.qty)}</p>
@@ -200,7 +199,6 @@ function openCart() {
     <button class="primary wide" data-action="checkout">متابعة الدفع</button>
     <button class="secondary wide" data-action="all">متابعة التسوق</button>
   `;
-  // ربط الأحداث
   panelBody.querySelector('[data-action="all"]').onclick = openShop;
   panelBody.querySelector('[data-action="checkout"]').onclick = openCheckout;
   panelBody.querySelectorAll('[data-qty]').forEach(btn => {
@@ -268,7 +266,6 @@ function openCheckout() {
         if (stock < row.qty) { showToast(`المخزون غير كافٍ: ${p.name} (${row.size})`); btn.disabled = false; btn.textContent = 'إرسال الطلب'; return; }
         orderItems.push({ id: row.id, name: p.name, size: row.size, qty: row.qty, price: p.price });
       }
-      // خصم المخزون من المتجر
       for (const it of orderItems) {
         const p = PRODUCTS.find(x => x.id === it.id);
         if (p) p.stock[it.size] = Math.max(0, (p.stock[it.size] || 0) - it.qty);
@@ -291,7 +288,6 @@ function openCheckout() {
         status: 'new'
       };
       
-      // إرسال لتليجرام
       const message = buildTelegramMessage(orderData);
       await sendTelegram(message);
       
@@ -346,10 +342,9 @@ function openShop() {
     return;
   }
   PRODUCTS.forEach(p => {
-    const img = p.imageUrl || MODEL_IMAGE;
     grid.innerHTML += `
       <div class="catalog-piece">
-        <button class="catalog-photo" data-id="${p.id}"><img src="${img}" alt="${p.name}"></button>
+        <button class="catalog-photo" data-id="${p.id}"><img src="${p.imageUrl}" alt="${p.name}"></button>
         <h3>${p.name}</h3>
         <p>${money(p.price)}</p>
       </div>
@@ -362,8 +357,6 @@ function openShop() {
 
 // --- تسجيل الدخول والتأكيد ---
 const authModal = $('auth-modal');
-let pendingVerifyEmail = null;
-let generatedCode = null;
 
 function openAuth(tab = 'login') {
   authModal.classList.add('open');
@@ -387,28 +380,25 @@ $('signup-btn').onclick = async () => {
   const name = $('signup-name').value.trim();
   const email = $('signup-email').value.trim();
   const phone = $('signup-phone').value.trim();
-  const username = $('signup-username').value.trim();
   const pass = $('signup-pass').value;
   $('signup-err').textContent = '';
   
-  if (!name || !email || !phone || !username || pass.length < 6) {
+  if (!name || !email || !phone || pass.length < 6) {
     $('signup-err').textContent = 'أكملي كل الحقول، كلمة المرور 6 أحرف على الأقل';
     return;
   }
   
-  // توليد كود تحقق (6 أرقام)
+  // توليد كود تحقق
   generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
   
-  // إرسال الكود إلى تيليجرام (للتأكيد) - هنا نحاكي إرسال البريد
-  const emailMessage = `كود التحقق الخاص بك هو: ${generatedCode}`;
-  // نرسل الكود إلى الإدارة عبر تليجرام
-  await sendTelegram(`📧 طلب تأكيد حساب جديد:\nالاسم: ${name}\nالإيميل: ${email}\nاليوزر: ${username}\nكود التحقق: ${generatedCode}`);
+  // إرسال بيانات الحساب والكود إلى تيليجرام
+  await sendTelegram(`📧 طلب تأكيد حساب جديد:\nالاسم: ${name}\nالإيميل: ${email}\nالهاتف: ${phone}\nكود التحقق: ${generatedCode}`);
   
-  // حفظ المستخدم مؤقتاً (في الواقع، نستخدم localStorage للتجربة)
-  const user = { name, email, phone, username, pass };
+  // حفظ المستخدم مؤقتاً
+  const user = { name, email, phone, pass };
   localStorage.setItem('alyasimin-pending-user', JSON.stringify(user));
+  pendingVerifyEmail = email;
   
-  // الانتقال لشاشة التحقق
   $('auth-login-view').classList.add('hidden');
   $('auth-signup-view').classList.add('hidden');
   $('auth-verify-view').classList.remove('hidden');
@@ -420,14 +410,13 @@ $('verify-btn').onclick = () => {
   const code = $('verify-code').value.trim();
   if (!generatedCode) { $('verify-err').textContent = 'يرجى إنشاء حساب أولاً'; return; }
   if (code === generatedCode) {
-    // حفظ المستخدم في LocalStorage
     const pendingUser = JSON.parse(localStorage.getItem('alyasimin-pending-user') || '{}');
     const users = JSON.parse(localStorage.getItem('alyasimin-users') || '{}');
     users[pendingUser.email] = { ...pendingUser, verified: true };
     localStorage.setItem('alyasimin-users', JSON.stringify(users));
     localStorage.removeItem('alyasimin-pending-user');
     
-    currentUser = { uid: pendingUser.username, email: pendingUser.email, name: pendingUser.name, phone: pendingUser.phone };
+    currentUser = { uid: pendingUser.email, email: pendingUser.email, name: pendingUser.name, phone: pendingUser.phone };
     closeAuth();
     showToast('تم تأكيد حسابك بنجاح!');
     if (pendingCheckout) { pendingCheckout = false; setTimeout(openCheckout, 300); }
@@ -436,26 +425,32 @@ $('verify-btn').onclick = () => {
   }
 };
 
+// --- إعادة إرسال الكود ---
+$('resend-btn').onclick = async () => {
+  if (!generatedCode || !pendingVerifyEmail) return;
+  await sendTelegram(`🔄 إعادة إرسال كود التحقق:\nالإيميل: ${pendingVerifyEmail}\nالكود: ${generatedCode}`);
+  showToast('أُعيد إرسال الكود إلى الإدارة');
+};
+
 // --- تسجيل الدخول ---
 $('login-btn').onclick = () => {
-  const userInput = $('login-user').value.trim();
+  const userInput = $('login-email').value.trim();
   const pass = $('login-pass').value;
   $('login-err').textContent = '';
   
-  if (!userInput || !pass) { $('login-err').textContent = 'أدخلي اليوزر/الإيميل وكلمة المرور'; return; }
+  if (!userInput || !pass) { $('login-err').textContent = 'أدخلي البريد وكلمة المرور'; return; }
   
-  // البحث باليوزر أو الإيميل
   const users = JSON.parse(localStorage.getItem('alyasimin-users') || '{}');
   let foundUser = null;
   for (const key in users) {
-    if ((users[key].username === userInput || users[key].email === userInput) && users[key].pass === pass) {
+    if (users[key].email === userInput && users[key].pass === pass) {
       foundUser = users[key];
       break;
     }
   }
   
   if (foundUser) {
-    currentUser = { uid: foundUser.username, email: foundUser.email, name: foundUser.name, phone: foundUser.phone };
+    currentUser = { uid: foundUser.email, email: foundUser.email, name: foundUser.name, phone: foundUser.phone };
     closeAuth();
     showToast('مرحباً ' + foundUser.name);
     if (pendingCheckout) { pendingCheckout = false; setTimeout(openCheckout, 300); }
