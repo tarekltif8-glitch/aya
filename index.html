@@ -260,14 +260,12 @@ function showToast(msg) {
   t._timer = setTimeout(()=>t.classList.remove('visible'), 3000);
 }
 
-// شريط التنقل المتحرك
 window.addEventListener('scroll', () => {
   const header = $('header');
   if (window.scrollY > 50) header.classList.add('scrolled');
   else header.classList.remove('scrolled');
 });
 
-// الماوس المتحرك للخلفية
 const orb1 = $('orb1'), orb2 = $('orb2'), orb3 = $('orb3');
 document.addEventListener('mousemove', (e) => {
   const x = (e.clientX / window.innerWidth - 0.5) * 40;
@@ -277,9 +275,6 @@ document.addEventListener('mousemove', (e) => {
   orb3.style.transform = `translate(${x}px, ${-y}px)`;
 });
 
-// =======================================================
-// جلب المنتجات والكتالوج
-// =======================================================
 function loadProducts() {
   onSnapshot(collection(db, 'products'), snap => {
     PRODUCTS = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b)=>(a.order||0)-(b.order||0));
@@ -322,7 +317,6 @@ function renderGrid() {
     const hasImg = p.imageUrl && p.imageUrl.trim() !== '';
     const imgHTML = hasImg ? `<img src="${p.imageUrl}" alt="${p.name}" loading="lazy">` : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#555">بلا صورة</div>`;
     
-    // تأخير بسيط في ظهور كل كارت ليعطي تأثير تتابعي (Stagger)
     return `
       <div class="card" data-id="${p.id}" style="animation-delay: ${index * 0.05}s">
         <div class="card-img-wrap">${imgHTML}</div>
@@ -395,9 +389,6 @@ function quickAdd(id) {
   addToCart(p.id, firstSize);
 }
 
-// =======================================================
-// السلة وإتمام الطلب
-// =======================================================
 function addToCart(id, size) {
   const p = PRODUCTS.find(x => x.id === id);
   if (!p) return;
@@ -501,7 +492,7 @@ $('checkout-form').onsubmit = async (e) => {
     phone: formData.get('phone'),
     city: formData.get('city'),
     address: formData.get('address'),
-    note: formData.get('note') || '' // اختياري
+    note: formData.get('note') || ''
   };
 
   try {
