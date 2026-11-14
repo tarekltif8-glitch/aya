@@ -317,15 +317,19 @@ function renderOrders() {
     const st = o.status || 'pending';
     const stLabel = st === 'pending' ? '⏳ قيد المراجعة' : st === 'approved' ? '✓ مقبول' : '✕ مرفوض';
     const date = o.createdAt?.toDate?.()?.toLocaleString('ar-LY') || '—';
-    const itemsHtml = (o.items || []).map((it) =>
-      '<div>• <strong>' + escapeHtml(it.name) + '</strong> — مقاس ' + escapeHtml(it.size) + ' — الكمية ' + it.qty + ' — ' + money(it.price * it.qty) + '</div>'
-    ).join('');
-    const actionsHtml = st === 'pending'
-      ? '<div class="order-actions">' +
+    
+    const itemsHtml = (o.items || []).map((it) => {
+      return '<div>• <strong>' + escapeHtml(it.name) + '</strong> — مقاس ' + escapeHtml(it.size) + ' — الكمية ' + it.qty + ' — ' + money(it.price * it.qty) + '</div>';
+    }).join('');
+    
+    let actionsHtml = '';
+    if (st === 'pending') {
+      actionsHtml = '<div class="order-actions">' +
           '<button class="btn ok" data-approve="' + o.id + '">✓ موافقة (خصم من المخزون)</button>' +
           '<button class="btn danger" data-reject="' + o.id + '">✕ رفض (بدون خصم)</button>' +
-        '</div>'
-      : '';
+        '</div>';
+    }
+
     return `
       <div class="order ${st}">
         <div class="order-head">
