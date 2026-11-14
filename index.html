@@ -20,7 +20,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 a { color: inherit; text-decoration: none; }
 .wide { font-family: 'Cairo', sans-serif; font-weight: 700; }
 
-/* ====== الخلفية الجديدة (أوضح وأكثر فخامة) ====== */
+/* ====== الخلفية الجديدة ====== */
 .bg-canvas { 
   position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; 
   background-color: #050505;
@@ -30,7 +30,7 @@ a { color: inherit; text-decoration: none; }
   background-size: cover;
   background-position: center;
   background-blend-mode: overlay;
-  opacity: 0.95; /* رفعنا الشفافية لتبدو الخلفية واضحة */
+  opacity: 0.95;
 }
 .bg-light {
   position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
@@ -183,7 +183,6 @@ header.scrolled {
   <div class="grid" id="products-grid"></div>
 </section>
 
-<!-- نافذة المنتج -->
 <div class="modal-overlay" id="quick-view">
   <div class="modal-content">
     <button class="close-btn" id="close-qv">×</button>
@@ -202,7 +201,6 @@ header.scrolled {
   </div>
 </div>
 
-<!-- السلة -->
 <div class="cart-drawer" id="cart-drawer">
   <div class="cart-header">
     <h2 class="wide" style="font-size:20px">سلة التسوق</h2>
@@ -344,12 +342,10 @@ function openQuickView(id) {
   $('qv-price').textContent = money(p.price);
   $('qv-desc').textContent = p.desc || 'قطعة مميزة من مجموعتنا الجديدة. صُممت لتبرز جمالك وتضيف لمسة من الفخامة لإطلالتك.';
 
-  // إعداد معرض الصور
   const imgs = p.allImages.length ? p.allImages : [''];
   $('qv-main-img').src = imgs[0];
   $('qv-thumbs').innerHTML = imgs.map((url, i) => `<img src="${url}" class="${i===0?'active':''}" onclick="document.getElementById('qv-main-img').src='${url}'; document.querySelectorAll('.modal-thumbs img').forEach(el=>el.classList.remove('active')); this.classList.add('active');">`).join('');
 
-  // إعداد المقاسات
   $('qv-sizes').innerHTML = SIZES.map(s => {
     const stock = p.stock?.[s] || 0;
     return `<button class="size-btn wide" data-size="${s}" ${stock < 1 ? 'disabled' : ''}>${s}</button>`;
