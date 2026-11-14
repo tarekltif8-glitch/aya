@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>الإدارة — ALYASIMIN ABAYA</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#16191f;--mid:#737b86;--line:#e6ebf0;--gold:#b98179;--err:#c0392b;--ok:#27ae60;--warn:#b9770e}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Tajawal','Cairo',system-ui,sans-serif;color:var(--ink);background:#f3f6fa;min-height:100vh}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.wide{font-family:'Cairo',sans-serif;font-weight:600}
+
+/* Login */
+.login-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#16191f;padding:20px;z-index:50}
+.login-box{background:#fff;width:min(400px,100%);padding:36px 30px;text-align:center}
+.login-box h1{font-size:20px;font-weight:600;margin-bottom:6px}
+.login-box p{font-size:13px;color:var(--mid);margin-bottom:24px}
+.login-box input{width:100%;padding:12px;border:1px solid #dce2e9;font:14px 'Tajawal',sans-serif;margin-bottom:12px;text-align:center;background:#fff}
+.login-box .err{color:var(--err);font-size:12px;min-height:18px;margin-bottom:8px}
+.login-box button{width:100%;background:var(--ink);color:#fff;padding:14px;font-size:13px;font-weight:600}
+
+/* App */
+.app{display:none;max-width:1240px;margin:0 auto;padding:24px 20px}
+.app.open{display:block}
+.app-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.app-head h1{font-size:20px;font-weight:600}
+.app-head .actions{display:flex;gap:8px}
+.btn{padding:10px 18px;font-size:12px;font-weight:600;border:1px solid #dce2e9;background:#fff;border-radius:2px}
+.btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn.danger{color:var(--err);border-color:var(--err)}
+.btn.ok{background:var(--ok);color:#fff;border-color:var(--ok)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+.tabs-admin{display:flex;gap:4px;margin-bottom:20px;border-bottom:1px solid var(--line)}
+.tabs-admin button{padding:12px 22px;font-size:14px;font-weight:600;color:var(--mid);border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs-admin button.active{color:var(--ink);border-bottom-color:var(--ink)}
+.tabs-admin button.has-pending{color:var(--warn)}
+.tab-pane{display:none}
+.tab-pane.active{display:block}
+
+/* Products table */
+.card{background:#fff;padding:20px;margin-bottom:16px}
+.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{padding:10px 8px;border-bottom:1px solid var(--line);text-align:right;vertical-align:middle}
+th{background:#f3f6fa;font-weight:600;font-size:11px;position:sticky;top:0;z-index:1}
+td input,td select{width:100%;border:1px solid #dce2e9;padding:6px 8px;font:13px 'Tajawal',sans-serif;background:#fff}
+.stock-cell{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.stock-cell input{text-align:center;padding:4px 2px;font-size:12px}
+.stock-cell .lbl{font-size:9px;color:var(--mid);text-align:center;margin-top:2px}
+.img-thumb{width:56px;height:56px;border:1px solid var(--line);background:#f3f6fa}
+.img-thumb svg{width:100%;height:100%}
+
+/* Orders */
+.order{background:#fff;padding:18px 20px;margin-bottom:12px;border-right:3px solid var(--line)}
+.order.pending{border-right-color:#f39c12}
+.order.approved{border-right-color:var(--ok)}
+.order.rejected{border-right-color:var(--err)}
+.order-head{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.order-head h3{font-size:14px;font-weight:600}
+.order-head .meta{font-size:11px;color:var(--mid);margin-top:4px;line-height:1.8}
+.badge{display:inline-block;padding:4px 10px;font-size:10px;font-weight:600;border-radius:2px}
+.badge.pending{background:#fef5e7;color:#b9770e}
+.badge.approved{background:#eafaf1;color:#1e8449}
+.badge.rejected{background:#fdedec;color:#a93226}
+.order-items{margin:10px 0;font-size:12px;color:var(--mid);line-height:1.9}
+.order-items strong{color:var(--ink)}
+.order-total{font-size:15px;font-weight:600;margin:8px 0}
+.order-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.empty{padding:50px;text-align:center;color:var(--mid);font-size:14px}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,15px);background:var(--ink);color:#fff;padding:12px 22px;font-size:13px;opacity:0;transition:.2s;pointer-events:none;z-index:100;border-radius:2px}
+.toast.visible{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-screen" id="login-screen">
+  <div class="login-box">
+    <h1>لوحة إدارة ALYASIMIN ABAYA</h1>
+    <p>أدخل بيانات الدخول للمتابعة</p>
+    <input id="admin-user" placeholder="اسم المستخدم" autocomplete="username">
+    <input id="admin-pass" type="password" placeholder="كلمة المرور" autocomplete="current-password">
+    <div class="err" id="admin-err"></div>
+    <button id="admin-login-btn">دخول</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app" id="app">
+  <div class="app-head">
+    <h1>إدارة ALYASIMIN ABAYA</h1>
+    <div class="actions">
+      <button class="btn" id="btn-refresh">↻ تحديث</button>
+      <button class="btn danger" id="btn-logout">خروج</button>
+    </div>
+  </div>
+
+  <div class="tabs-admin">
+    <button data-tab="products" class="active">📦 المنتجات والكميات</button>
+    <button data-tab="orders" id="tab-orders-btn">🧾 الطلبات (<span id="orders-count">0</span>)</button>
+  </div>
+
+  <!-- PRODUCTS TAB -->
+  <div class="tab-pane active" id="tab-products">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+        <div style="font-size:13px;color:var(--mid)">عدّلي الكميات ثم اضغطي حفظ — التغييرات تُحدَّث مباشرة في المتجر.</div>
+        <button class="btn primary" id="btn-save-products">💾 حفظ التغييرات</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>#</th><th>الصورة</th><th>الاسم</th><th>السعر</th><th>الفئة</th>
+            <th style="min-width:220px">المخزون (XS S M L XL)</th>
+            <th>الإطلالة</th>
+          </tr></thead>
+          <tbody id="products-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ORDERS TAB -->
+  <div class="tab-pane" id="tab-orders">
+    <div id="orders-list"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+  getFirestore, collection, doc, onSnapshot, updateDoc, serverTimestamp, runTransaction
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDOfbi23sVHpexkESPsmTlbuxbKcRgh2wo",
+  authDomain: "ayya-25562.firebaseapp.com",
+  projectId: "ayya-25562",
+  storageBucket: "ayya-25562.firebasestorage.app",
+  messagingSenderId: "317439048144",
+  appId: "1:317439048144:web:d304d450842a09bc13e1d5",
+  measurementId: "G-79VQJQX5YN"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const ADMIN_USER = 'tarek';
+const ADMIN_PASS = '808909';
+const SIZES = ['XS','S','M','L','XL'];
+
+const PIECES = 'https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20261102_042057_080e85b0-b4aa-4072-8eb9-2304c7baf42b.png&w=2400&q=85';
+const IMG_BOXES = [[26,224,28,214],[304,412,22,236],[530,666,12,242],[752,922,100,146],[70,176,246,466],[294,422,294,432],[508,688,240,452],[780,890,252,466],[64,178,484,698],[316,396,482,698],[530,672,508,682],[754,916,484,700]];
+
+const $ = (id) => document.getElementById(id);
+const NS = 'http://www.w3.org/2000/svg';
+
+let PRODUCTS = [];
+let ORDERS = [];
+let listenersStarted = false;
+
+/* ========== HELPERS ========== */
+const money = (n) => new Intl.NumberFormat('ar-LY', { style: 'currency', currency: 'LYD', maximumFractionDigits: 0 }).format(n) + ' د.ل';
+
+function escapeHtml(s) {
+  return String(s || '').replace(/[&<>"']/g, (c) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+}
+
+function toast(msg) {
+  const el = $('toast');
+  el.textContent = msg;
+  el.classList.add('visible');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => el.classList.remove('visible'), 2600);
+}
+
+function crop(href, x0, y0, w, h, sheetW, sheetH) {
+  const s = document.createElementNS(NS, 'svg');
+  s.setAttribute('viewBox', `${x0} ${y0} ${w} ${h}`);
+  const f = document.createElementNS(NS, 'svg');
+  const attrs = { x: x0, y: y0, width: w, height: h, viewBox: `${x0} ${y0} ${w} ${h}` };
+  Object.entries(attrs).forEach(([k, v]) => f.setAttribute(k, v));
+  const i = document.createElementNS(NS, 'image');
+  i.setAttribute('href', href);
+  i.setAttribute('width', sheetW);
+  i.setAttribute('height', sheetH);
+  f.append(i);
+  s.append(f);
+  return s;
+}
+
+function productCrop(p) {
+  const box = (p && p.imageBox) || IMG_BOXES[0];
+  const a = box[0], b = box[1], c = box[2], d = box[3];
+  return crop(PIECES, a, c, b - a, d - c, 960, 720);
+}
+
+/* ========== LOGIN ========== */
+function tryLogin() {
+  const u = $('admin-user').value.trim();
+  const p = $('admin-pass').value;
+  if (u === ADMIN_USER && p === ADMIN_PASS) {
+    sessionStorage.setItem('alyasimin-admin', '1');
+    showApp();
+  } else {
+    $('admin-err').textContent = 'بيانات غير صحيحة';
+  }
+}
+
+function showApp() {
+  $('login-screen').style.display = 'none';
+  $('app').classList.add('open');
+  startListeners();
+}
+
+function startListeners() {
+  if (listenersStarted) return;
+  listenersStarted = true;
+  listenProducts();
+  listenOrders();
+}
+
+$('admin-login-btn').addEventListener('click', tryLogin);
+$('admin-pass').addEventListener('keydown', (e) => { if (e.key === 'Enter') tryLogin(); });
+
+$('btn-logout').addEventListener('click', () => {
+  sessionStorage.removeItem('alyasimin-admin');
+  location.reload();
+});
+
+/* ========== TABS ========== */
+document.querySelectorAll('[data-tab]').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-tab]').forEach((b) => b.classList.toggle('active', b === btn));
+    document.querySelectorAll('.tab-pane').forEach((p) => p.classList.toggle('active', p.id === 'tab-' + btn.dataset.tab));
+  });
+});
+
+/* ========== PRODUCTS ========== */
+function listenProducts() {
+  onSnapshot(collection(db, 'products'), (snap) => {
+    PRODUCTS = snap.docs
+      .map((d) => {
+        const data = d.data();
+        return {
+          id: d.id,
+          ...data,
+          stock: data.stock || { XS: 0, S: 0, M: 0, L: 0, XL: 0 }
+        };
+      })
+      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+    renderProducts();
+  });
+}
+
+function renderProducts() {
+  const tbody = $('products-tbody');
+  if (!tbody) return;
+
+  if (!PRODUCTS.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:#737b86">لا توجد منتجات — أضيفيها من ملف index أو من Firestore.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = PRODUCTS.map((p, i) => {
+    const stockCells = SIZES.map((s) => {
+      const val = p.stock?.[s] || 0;
+      return '<div><input data-stock="' + s + '" type="number" min="0" value="' + val + '"><div class="lbl">' + s + '</div></div>';
+    }).join('');
+
+    const catOptions = ['عبايات', 'معاطف', 'ملابس', 'تنانير', 'إكسسوارات']
+      .map((c) => '<option ' + (c === p.category ? 'selected' : '') + '>' + c + '</option>')
+      .join('');
+
+    return `
+      <tr data-id="${p.id}">
+        <td>${i + 1}</td>
+        <td><div class="img-thumb" data-img="${p.id}"></div></td>
+        <td><input data-field="name" value="${escapeHtml(p.name)}"></td>
+        <td><input data-field="price" type="number" min="0" step="1" value="${p.price}" style="width:90px"></td>
+        <td><select data-field="category">${catOptions}</select></td>
+        <td><div class="stock-cell">${stockCells}</div></td>
+        <td><input data-field="look" type="number" min="1" value="${(p.look || 0) + 1}" style="width:60px"></td>
+      </tr>`;
+  }).join('');
+
+  tbody.querySelectorAll('[data-img]').forEach((el) => {
+    const p = PRODUCTS.find((x) => x.id === el.dataset.img);
+    if (p) {
+      el.innerHTML = '';
+      el.append(productCrop(p));
+    }
+  });
+}
+
+$('btn-save-products').addEventListener('click', async () => {
+  const btn = $('btn-save-products');
+  btn.disabled = true;
+  btn.textContent = 'جارٍ الحفظ...';
+  try {
+    const rows = $('products-tbody').querySelectorAll('tr[data-id]');
+    for (const tr of rows) {
+      const id = tr.dataset.id;
+      const name = tr.querySelector('[data-field="name"]').value.trim();
+      const price = Math.max(0, Number(tr.querySelector('[data-field="price"]').value) || 0);
+      const category = tr.querySelector('[data-field="category"]').value;
+      const lookInput = Number(tr.querySelector('[data-field="look"]').value) || 1;
+      const look = Math.max(0, lookInput - 1);
+      const stock = {};
+      SIZES.forEach((s) => {
+        stock[s] = Math.max(0, Number(tr.querySelector('[data-stock="' + s + '"]').value) || 0);
+      });
+      await updateDoc(doc(db, 'products', id), { name, price, category, stock, look });
+    }
+    toast('✓ تم حفظ التغييرات');
+  } catch (e) {
+    console.error(e);
+    toast('خطأ: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '💾 حفظ التغييرات';
+  }
+});
+
+/* ========== ORDERS ========== */
+function listenOrders() {
+  onSnapshot(collection(db, 'orders'), (snap) => {
+    ORDERS = snap.docs
+      .map((d) => ({ id: d.id, ...d.data() }))
+      .sort((a, b) => {
+        const ta = a.createdAt?.toMillis?.() || 0;
+        const tb = b.createdAt?.toMillis?.() || 0;
+        return tb - ta;
+      });
+
+    const pending = ORDERS.filter((o) => (o.status || 'pending') === 'pending').length;
+    $('orders-count').textContent = ORDERS.length;
+    const tabBtn = $('tab-orders-btn');
+    if (tabBtn) tabBtn.classList.toggle('has-pending', pending > 0);
+
+    renderOrders();
+  });
+}
+
+function renderOrders() {
+  const container = $('orders-list');
+  if (!container) return;
+
+  if (!ORDERS.length) {
+    container.innerHTML = '<div class="empty">لا توجد طلبات بعد.</div>';
+    return;
+  }
+
+  container.innerHTML = ORDERS.map((o) => {
+    const st = o.status || 'pending';
+    const stLabel = st === 'pending' ? '⏳ قيد المراجعة' : st === 'approved' ? '✓ مقبول' : '✕ مرفوض';
+    const date = o.createdAt?.toDate?.()?.toLocaleString('ar-LY') || '—';
+
+    const itemsHtml = (o.items || []).map((it) =>
+      '<div>• <strong>' + escapeHtml(it.name) + '</strong> — مقاس ' + escapeHtml(it.size) + ' — الكمية ' + it.qty + ' — ' + money(it.price * it.qty) + '</div>'
+    ).join('');
+
+    const actionsHtml = st === 'pending'
+      ? '<div class="order-actions">' +
+          '<button class="btn ok" data-approve="' + o.id + '">✓ موافقة على الطلب (خصم من المخزون)</button>' +
+          '<button class="btn danger" data-reject="' + o.id + '">✕ رفض الطلب (بدون خصم)</button>' +
+        '</div>'
+      : '';
+
+    return `
+      <div class="order ${st}">
+        <div class="order-head">
+          <div>
+            <h3>👤 ${escapeHtml(o.customer?.name || '—')}</h3>
+            <div class="meta">
+              📞 ${escapeHtml(o.customer?.phone || '—')} &nbsp;·&nbsp;
+              📧 ${escapeHtml(o.customer?.email || '—')}<br>
+              📍 ${escapeHtml(o.customer?.address || '—')} — ${escapeHtml(o.customer?.city || '—')}
+              ${o.customer?.note ? '<br>📝 ' + escapeHtml(o.customer.note) : ''}
+            </div>
+          </div>
+          <div style="text-align:left">
+            <span class="badge ${st}">${stLabel}</span>
+            <div class="meta" style="margin-top:6px">${date}</div>
+          </div>
+        </div>
+        <div class="order-items">${itemsHtml}</div>
+        <div class="order-total">💰 الإجمالي: ${money(o.total || 0)}</div>
+        ${actionsHtml}
+      </div>`;
+  }).join('');
+
+  container.querySelectorAll('[data-approve]').forEach((btn) => {
+    btn.addEventListener('click', () => approveOrder(btn.dataset.approve));
+  });
+  container.querySelectorAll('[data-reject]').forEach((btn) => {
+    btn.addEventListener('click', () => rejectOrder(btn.dataset.reject));
+  });
+}
+
+async function approveOrder(orderId) {
+  const order = ORDERS.find((o) => o.id === orderId);
+  if (!order) return;
+  if ((order.status || 'pending') !== 'pending') {
+    toast('الطلب مُعالج مسبقاً');
+    return;
+  }
+  if (!confirm('تأكيد الموافقة؟ سيتم خصم الكميات من المخزون.')) return;
+
+  try {
+    for (const it of order.items) {
+      const pRef = doc(db, 'products', it.id);
+      await runTransaction(db, async (tx) => {
+        const s = await tx.get(pRef);
+        if (!s.exists()) throw new Error('منتج غير موجود: ' + it.name);
+        const p = s.data();
+        const stock = p.stock || {};
+        const cur = stock[it.size] || 0;
+        if (cur < it.qty) {
+          throw new Error('المخزون غير كافٍ: ' + (p.name || it.name) + ' (' + it.size + ') — المتبقي ' + cur);
+        }
+        stock[it.size] = cur - it.qty;
+        tx.update(pRef, { stock });
+      });
+    }
+
+    await updateDoc(doc(db, 'orders', orderId), {
+      status: 'approved',
+      approvedAt: serverTimestamp()
+    });
+
+    toast('✓ تم قبول الطلب وخصم المخزون');
+  } catch (e) {
+    console.error(e);
+    toast('فشل: ' + e.message);
+  }
+}
+
+async function rejectOrder(orderId) {
+  const order = ORDERS.find((o) => o.id === orderId);
+  if (!order) return;
+  if ((order.status || 'pending') !== 'pending') {
+    toast('الطلب مُعالج مسبقاً');
+    return;
+  }
+  if (!confirm('تأكيد رفض الطلب؟ لن يتم خصم أي كمية من المخزون.')) return;
+
+  try {
+    await updateDoc(doc(db, 'orders', orderId), {
+      status: 'rejected',
+      rejectedAt: serverTimestamp()
+    });
+    toast('تم رفض الطلب — المخزون لم يتغير');
+  } catch (e) {
+    console.error(e);
+    toast('فشل: ' + e.message);
+  }
+}
+
+/* ========== BOOT ========== */
+if (sessionStorage.getItem('alyasimin-admin') === '1') {
+  showApp();
+} else {
+  $('admin-user').focus();
+}
+</script>
+</body>
+</html>
