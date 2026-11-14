@@ -4,7 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>ALYASIMIN ABAYA - Runway</title>
-<meta name="description" content="A runway lookbook where six looks stand in a line into the distance and every drag brings the next one to the front.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Michroma&display=swap" rel="stylesheet">
@@ -15,7 +14,6 @@ html,body{height:100%;background:#fff}
 body{font-family:Inter,system-ui,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
 a{color:inherit;text-decoration:none}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
-ul{list-style:none}
 .wide{font-family:Michroma,sans-serif;text-transform:uppercase}
 .page{height:100svh;min-height:520px;display:grid;grid-template-rows:auto 1fr;background:#fff}
 header{position:relative;z-index:5;background:#fff;padding:calc(20*var(--u)) calc(46*var(--u)) calc(15*var(--u))}
@@ -32,9 +30,15 @@ main{position:relative;display:grid;grid-template-columns:1fr calc(372*var(--u))
 .stage{position:relative;overflow:hidden;min-width:0;touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:none;
   background:linear-gradient(transparent 60%,rgba(255,255,255,.72) 100%),linear-gradient(90deg,#f1f5fa 0%,#e7eff6 38%,#eef4f9 62%,#f6f9fc 100%)}
 .line{position:absolute;inset:0}
-.m{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform,filter;cursor:none}
-.m svg{display:block;position:relative;width:100%;height:100%}
-.m:before{content:"";position:absolute;left:8%;right:8%;bottom:-1.6%;height:3.6%;border-radius:50%;background:radial-gradient(closest-side,rgba(70,85,105,.24),transparent)}
+
+/* تنسيق الشخصية (العباية) */
+.m{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform,filter;cursor:none; display:flex; align-items:flex-end; justify-content:center;}
+.m-inner {width: 100%; height: 100%; display: flex; align-items: flex-end; justify-content: center;}
+.m img{display:block; width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.1));}
+
+/* ظل أرضي */
+.m:before{content:"";position:absolute;left:15%;right:15%;bottom:-1%;height:3%;border-radius:50%;background:radial-gradient(closest-side,rgba(70,85,105,.2),transparent); z-index: 0;}
+
 .intro{position:absolute;z-index:2;left:calc(46*var(--u));top:calc(36*var(--u));width:calc(390*var(--u));pointer-events:none}
 .intro h2{font-weight:400;font-size:calc(22*var(--u));line-height:1.2;letter-spacing:.16em;white-space:nowrap}
 .intro p{margin-top:calc(16*var(--u));font-size:calc(14*var(--u));line-height:1.62;letter-spacing:.012em;color:var(--mid)}
@@ -53,8 +57,8 @@ main{position:relative;display:grid;grid-template-columns:1fr calc(372*var(--u))
 .fav{position:absolute;left:calc(22*var(--u));top:calc(18*var(--u));width:calc(22*var(--u));height:calc(22*var(--u));z-index:1;color:var(--ink)}
 .fav svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.4;transition:fill .2s}
 .fav[aria-pressed=true] svg{fill:#d8a7a0;stroke:#b98179}
-.shot{flex:1;min-height:0;display:block}
-.shot svg{display:block;width:100%;height:100%}
+.shot{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;}
+.shot img{max-width:100%;max-height:100%;object-fit:contain; mix-blend-mode: multiply;}
 .meta{display:grid;grid-template-columns:1fr auto;align-items:end;margin-top:calc(8*var(--u))}
 .meta h3{font-weight:400;font-size:calc(9.5*var(--u));letter-spacing:.14em}
 .meta span{display:block;grid-column:1;margin-top:calc(6*var(--u));font-size:calc(12.5*var(--u));color:var(--mid);letter-spacing:.03em}
@@ -64,7 +68,6 @@ main{position:relative;display:grid;grid-template-columns:1fr calc(372*var(--u))
 .add:hover{transform:rotate(90deg)}
 .wait{position:fixed;inset:0;z-index:9;background:#f1f5fa;transition:opacity .5s;pointer-events:none}
 .wait.gone{opacity:0}
-button:focus-visible,a:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
 @media (max-width:820px){
   :root{--u:1px}
   header{padding:14px 16px 12px}
@@ -87,8 +90,8 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ink);outline-offset
 <div class="page">
   <header>
     <div class="r1">
-      <a class="brand wide" href="#" aria-label="ALYASIMIN ABAYA">ALYASIMIN ABAYA</a>
-      <nav class="tabs wide" aria-label="Sections"><a class="on" href="#" aria-current="page">Runway</a><a href="#">The Maison</a><a href="#">Lookbook</a><a href="#">Shop</a></nav>
+      <a class="brand wide" href="#">ALYASIMIN ABAYA</a>
+      <nav class="tabs wide"><a class="on" href="#">Runway</a><a href="#">The Maison</a><a href="#">Lookbook</a><a href="#">Shop</a></nav>
       <div class="acct wide">
         <a href="#">Login</a>
         <a href="#" aria-label="Search"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg></a>
@@ -97,184 +100,232 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ink);outline-offset
         <a href="#">Cart (<span id="cart">0</span>)</a>
       </div>
     </div>
-    <nav class="r2 wide" aria-label="Departments"><a href="#">Collections</a><a href="#">Clothing</a><a href="#">Lookbook</a><a href="#">Beauty</a><a href="#">Accessories</a><a href="#">Our World</a></nav>
   </header>
   <main>
-    <section class="stage" id="stage" aria-label="Runway looks. Drag, scroll or use the arrow keys to change look." tabindex="0">
+    <section class="stage" id="stage" tabindex="0">
       <div class="line" id="line"></div>
       <div class="intro">
         <h2 class="wide">Spring Summer 2027</h2>
         <p>A study in softness and strength. The new season collection from ALYASIMIN ABAYA blends delicate textures and modern silhouettes, crafted for a more beautiful tomorrow.</p>
       </div>
       <div class="tag">
-        <div class="look wide" aria-live="polite"><span>Look</span><span class="win"><span class="roll" id="roll"></span></span></div>
+        <div class="look wide"><span>Look</span><span class="win"><span class="roll" id="roll"></span></span></div>
         <a class="shop wide" href="#">Shop the look</a>
       </div>
       <div class="ring" id="ring"></div>
     </section>
-    <aside class="rail" id="rail" aria-label="Pieces in this look"></aside>
+    <aside class="rail" id="rail"></aside>
   </main>
 </div>
 <div class="wait" id="wait"></div>
 <script>
-// الصورة الخاصة بك
+// =======================================================
+// الصورة الخاصة بك (التي تظهر في القائمة)
+// =======================================================
 const MY_IMAGE = 'https://cdn.arabsstock.com/uploads/images/98331/brown-gulf-abaya-with-luxurious-thumbnail-98331.webp';
 
-// إذا أردت إبقاء العارضات الأصليات (المانيكانات)، سنضع صورتك فوقهن
-// الكود الأصلي يحتاج إلى صورة العارضة (موديل) لكي نضع العباية فوقها.
-// الصورة هنا هي صورة العارضة الأصلية من الرابط الذي أرسلتِه.
-const MODELS='https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20261102_042056_1a704ff7-b0e5-4a9f-bbda-62392b819fb6.png&w=3840&q=85';
-// سنستخدم صورتك كمنتج جانبي
-const PIECES=MY_IMAGE; 
+// =======================================================
+// هذا هو الرابط السري (لصورة المانيكان الشفافة التي سترتدي العباية)
+// وضعت لك صورة مانيكان احترافية لتندمج العباية معها
+// =======================================================
+const MANNEQUIN_BASE = 'https://www.transparentpng.com/thumb/mannequin/6JxJ0f-mannequin-transparent-images.png';
 
-const LOOKS=[[12,176],[178,330],[331,470],[476,633],[634,767],[767,956]],Y0=48,Y1=496,FIRST=15;
-
-// قائمة المنتجات (تم تعديلها لتظهر صورتك)
-const ITEMS=[
-  [0,340,0,1024,'عباية بنية فاخرة','1,000 د.ل'],
-  [0,340,0,1024,'عباية بنية فاخرة','1,000 د.ل'],
-  [0,340,0,1024,'عباية بنية فاخرة','1,000 د.ل'],
-  [0,340,0,1024,'عباية بنية فاخرة','1,000 د.ل'],
-  [0,340,0,1024,'عباية بنية فاخرة','1,000 د.ل'],
-  [0,340,0,1024,'عباية بنية فاخرة','1,000 د.ل']
+const ITEMS = [
+  { name: 'عباية بنية فاخرة', price: '1,000 د.ل' },
+  { name: 'حزام جلدي ذهبي', price: '250 د.ل' },
+  { name: 'حقيبة يد كلاسيكية', price: '450 د.ل' },
+  { name: 'طرحة حرير ناعمة', price: '120 د.ل' },
+  { name: 'عباية سهرة', price: '1,200 د.ل' },
+  { name: 'إكسسوارات ذهبية', price: '300 د.ل' }
 ];
 
-const KX=[1.2,.744,.496,.346,.235,.15,.085],KF=[1.14,.89,.777,.704,.651,.616,.59],KH=[1.18,.832,.574,.436,.334,.258,.19],
-      KB=[0,0,1.5,4,8,12,17],KO=[1,1,1,1,.86,.5,0];
-const N=LOOKS.length,$=id=>document.getElementById(id),calm=matchMedia('(prefers-reduced-motion:reduce)').matches;
-const stage=$('stage'),rail=$('rail'),ring=$('ring'),roll=$('roll'),line=$('line');
-const NS='http://www.w3.org/2000/svg',wrap=(x,n)=>((x%n)+n)%n;
-const clamp=(x,a,b)=>Math.min(b,Math.max(a,x));
+const KX=[1.2,.744,.496,.346,.235,.15,.085], KF=[1.14,.89,.777,.704,.651,.616,.59], KH=[1.18,.832,.574,.436,.334,.258,.19],
+      KB=[0,0,1.5,4,8,12,17], KO=[1,1,1,1,.86,.5,0];
 
-function crop(href,x0,y0,w,h,sheetW,sheetH){
-  const s=document.createElementNS(NS,'svg');s.setAttribute('viewBox',`${x0} ${y0} ${w} ${h}`);s.setAttribute('aria-hidden','true');
-  const f=document.createElementNS(NS,'svg');[['x',x0],['y',y0],['width',w],['height',h],['viewBox',`${x0} ${y0} ${w} ${h}`]].forEach(([k,v])=>f.setAttribute(k,v));
-  const i=document.createElementNS(NS,'image');i.setAttribute('href',href);i.setAttribute('width',sheetW);i.setAttribute('height',sheetH);f.append(i);s.append(f);return s;
-}
+const N = 6;
+const $ = id => document.getElementById(id);
+const wrap = (x,n) => ((x%n)+n)%n;
+const clamp = (x,a,b) => Math.min(b,Math.max(a,x));
 
-// إنشاء العارضات (المانيكانات الأصلية)
-const people=LOOKS.map(([a,b],i)=>{
-  const e=document.createElement('div');e.className='m';e.dataset.i=i;
+const stage=$('stage'), rail=$('rail'), ring=$('ring'), roll=$('roll'), line=$('line');
+
+// بناء العارضات (مانيكان شفاف + عباية)
+const people = [];
+for(let i=0; i<N; i++) {
+  const e = document.createElement('div'); e.className='m'; e.dataset.i=i;
+  const inner = document.createElement('div'); inner.className = 'm-inner';
   
-  // 1. نضع صورة العارضة الأصلية
-  const modelSvg = crop(MODELS,a,Y0,b-a,Y1-Y0,960,540);
+  // 1. جسم المانيكان (في الخلف)
+  const base = document.createElement('img');
+  base.src = MANNEQUIN_BASE;
+  base.style.position = 'absolute';
+  base.style.height = '100%';
+  base.style.bottom = '0';
+  base.style.zIndex = '1';
+  base.style.opacity = '0.6'; // شفافية خفيفة للمانيكان ليدمج مع العباية
   
-  // 2. نضع صورتك فوقها مباشرة
-  const dress = document.createElement('img');
-  dress.src = MY_IMAGE;
-  dress.style.position = 'absolute';
-  dress.style.left = '50%';
-  dress.style.bottom = '0';
-  dress.style.transform = 'translateX(-50%)';
-  dress.style.width = '65%'; // تعديل حجم العباية لتناسب جسم العارضة
-  dress.style.mixBlendMode = 'multiply'; // إزالة المربع الأبيض
-  dress.style.zIndex = '2';
-
-  e.append(modelSvg);
-  e.append(dress);
+  // 2. العباية (في الأمام)
+  const garment = document.createElement('img');
+  garment.src = MY_IMAGE;
+  garment.style.position = 'relative';
+  garment.style.height = '100%'; // نفس طول المانيكان
+  garment.style.zIndex = '2';
+  garment.style.mixBlendMode = 'multiply'; // إزالة الخلفية البيضاء
+  
+  inner.append(base);
+  inner.append(garment);
+  e.append(inner);
   line.append(e);
   
-  return{e,r:(b-a)/(Y1-Y0),f:'',o:''};
-});
-
-// القائمة الجانبية
-const cards=ITEMS.map(([a,b,c,d,name,price],i)=>{
-  const e=document.createElement('article');e.className='card'+(i%2?' alt':'');
-  e.innerHTML=`<button class="fav" aria-pressed="false" aria-label="Save ${name}"><svg viewBox="0 0 24 24"><path d="M12 20S3.5 15 3.5 9A4.6 4.6 0 0 1 12 6.6 4.600 4.600 0 0 1 20.500 9C20.500 15 12 20 12 20Z"/></svg></button><span class="shot"></span><div class="meta"><h3 class="wide">${name}</h3><span>${price}</span><button class="add" aria-label="Add ${name} to cart"></button></div>`;
-  
-  const img = document.createElement('img');
-  img.src = MY_IMAGE;
-  img.style.width = '100%';
-  img.style.height = '100%';
-  img.style.objectFit = 'contain';
-  img.style.mixBlendMode = 'multiply';
-  e.querySelector('.shot').append(img);
-  
-  rail.append(e);return e;
-});
-
-for(let i=0;i<=N;i++){const b=document.createElement('b');b.textContent=FIRST+i%N;roll.append(b)}
-let cart=0;
-rail.addEventListener('click',e=>{
-  const f=e.target.closest('.fav');if(f)f.setAttribute('aria-pressed',f.getAttribute('aria-pressed')!=='true');
-  if(e.target.closest('.add'))$('cart').textContent=++cart;
-});
-
-let W=0,H=0,base=0,cardS=0,side=false,dirty=true,p=0,target=0,last=0;
-function size(){
-  W=stage.clientWidth;H=stage.clientHeight;base=H*1.2;side=innerWidth<=820;
-  people.forEach(m=>{m.e.style.width=base*m.r+'px';m.e.style.height=base+'px'});
-  cardS=side?160:rail.clientHeight/3;
-  cards.forEach(c=>c.style.height=side?'100%':cardS+'px');
-  roll.style.setProperty('--h',roll.firstChild.getBoundingClientRect().height);
-  dirty=true;
+  people.push({ e, r: 0.6, f:'', o:'' }); 
 }
-addEventListener('resize',size);
+
+// بناء القائمة الجانبية
+const cards = [];
+ITEMS.forEach((item, i) => {
+  const e = document.createElement('article'); e.className = 'card' + (i%2?' alt':'');
+  e.innerHTML = `
+    <button class="fav" aria-pressed="false" aria-label="حفظ"><svg viewBox="0 0 24 24"><path d="M12 20S3.5 15 3.5 9A4.6 4.6 0 0 1 12 6.6 4.6 4.6 0 0 1 20.5 9C20.5 15 12 20 12 20Z"/></svg></button>
+    <span class="shot"><img src="${MY_IMAGE}"></span>
+    <div class="meta">
+      <h3 class="wide">${item.name}</h3>
+      <span>${item.price}</span>
+      <button class="add" aria-label="أضيفي"></button>
+    </div>`;
+  rail.append(e); cards.push(e);
+});
+
+for(let i=0; i<=N; i++){ const b = document.createElement('b'); b.textContent = i%N + 1; roll.append(b); }
+
+let cart = 0;
+rail.addEventListener('click', e => {
+  const f = e.target.closest('.fav');
+  if(f) f.setAttribute('aria-pressed', f.getAttribute('aria-pressed') !== 'true');
+  if(e.target.closest('.add')) $('cart').textContent = ++cart;
+});
+
+// محرك الحركة
+let W=0, H=0, base=0, cardS=0, side=false, dirty=true, p=0, target=0, last=0;
+
+function size(){
+  W = stage.clientWidth; H = stage.clientHeight;
+  base = H * 1.2;
+  side = innerWidth <= 820;
+  
+  people.forEach(m => {
+    m.e.style.width = (base * 0.6) + 'px';
+    m.e.style.height = base + 'px';
+  });
+  
+  cardS = side ? 160 : (rail.clientHeight / 3);
+  cards.forEach(c => c.style.height = side ? '100%' : cardS + 'px');
+  dirty = true;
+}
 
 function paint(){
-  people.forEach((m,i)=>{
-    let d=wrap(i-p,N);if(d>N-1)d-=N;
-    const k=clamp(d+1,0,6),a=Math.floor(k),b=Math.min(6,a+1),t=k-a,mix=A=>A[a]+(A[b]-A[a])*t;
-    const h=mix(KH)*H,s=h/base,w=h*m.r,x=mix(KX)*W-w/2,y=mix(KF)*H-h;
-    m.e.style.transform=`translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,0) scale(${s.toFixed(4)})`;
-    const f=mix(KB)/s,fs=f<.2?'none':`blur(${f.toFixed(1)}px)`,o=mix(KO).toFixed(3);
-    if(fs!==m.f){m.f=fs;m.e.style.filter=fs}
-    if(o!==m.o){m.o=o;m.e.style.opacity=o}
-    m.e.style.zIndex=100-Math.round(d*10);
+  people.forEach((m, i) => {
+    let d = wrap(i - p, N); 
+    if(d > N-1) d -= N;
+    
+    const k = clamp(d+1, 0, 6);
+    const a = Math.floor(k), b = Math.min(6, a+1), t = k-a;
+    const mix = A => A[a] + (A[b]-A[a])*t;
+    
+    const h = mix(KH) * H;
+    const s = h / base;
+    const w = h * 0.6; 
+    const x = mix(KX) * W - w/2;
+    const y = mix(KF) * H - h;
+    
+    m.e.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) scale(${s.toFixed(4)})`;
+    
+    const f = mix(KB)/s, fs = f < .2 ? 'none' : `blur(${f.toFixed(1)}px)`, o = mix(KO).toFixed(3);
+    if(fs !== m.f) { m.f = fs; m.e.style.filter = fs; }
+    if(o !== m.o) { m.o = o; m.e.style.opacity = o; }
+    
+    m.e.style.zIndex = 100 - Math.round(d*10);
   });
-  const all=cardS*ITEMS.length;
-  cards.forEach((c,i)=>{
-    let y=wrap(i*cardS-p*2*cardS,all);if(y>all-cardS)y-=all;
-    c.style.transform=side?`translate3d(${y.toFixed(1)}px,0,0)`:`translate3d(0,${y.toFixed(1)}px,0)`;
+  
+  const all = cardS * ITEMS.length;
+  cards.forEach((c, i) => {
+    let y = wrap(i*cardS - p*2*cardS, all);
+    if(y > all-cardS) y -= all;
+    c.style.transform = side ? `translate3d(${y.toFixed(1)}px, 0, 0)` : `translate3d(0, ${y.toFixed(1)}px, 0)`;
   });
-  roll.style.transform=`translate3d(0,${(-wrap(p,N)*roll.firstChild.offsetHeight).toFixed(1)}px,0)`;
+  
+  if(roll.firstChild) {
+    roll.style.transform = `translate3d(0, ${(-wrap(p, N) * roll.firstChild.offsetHeight).toFixed(1)}px, 0)`;
+  }
 }
 
 function frame(now){
-  const dt=Math.min(50,now-last)||16;last=now;
-  const was=p;
-  if(calm)p=target;else p+=(target-p)*(1-Math.exp(-dt*.0072));
-  if(Math.abs(target-p)<.0004)p=target;
-  if(p!==was||dirty){dirty=false;paint()}
-  cx+=(mx-cx)*.32;cy+=(my-cy)*.32;
-  ring.style.transform=`translate3d(${cx.toFixed(1)}px,${cy.toFixed(1)}px,0)`;
+  const dt = Math.min(50, now-last) || 16; last = now;
+  const was = p;
+  p += (target - p) * (1 - Math.exp(-dt * .0072));
+  if(Math.abs(target - p) < .0004) p = target;
+  
+  if(p !== was || dirty) { dirty = false; paint(); }
+  
+  cx += (mx - cx) * .32; cy += (my - cy) * .32;
+  if(ring) ring.style.transform = `translate3d(${cx.toFixed(1)}px, ${cy.toFixed(1)}px, 0)`;
+  
+  requestAnimationFrame(frame);
 }
 
-let mx=0,my=0,cx=0,cy=0,down=false,sx=0,st=0,moved=0,wheelT=0;
-const PULL=()=>Math.max(150,W*.2);
-stage.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse')ring.classList.add('show')});
-stage.addEventListener('pointerleave',()=>ring.classList.remove('show'));
-stage.addEventListener('pointermove',e=>{
-  const r=stage.getBoundingClientRect();mx=e.clientX-r.left;my=e.clientY-r.top;
-  if(!down)return;
-  const dx=e.clientX-sx;moved=Math.max(moved,Math.abs(dx));target=st+dx/PULL();
+// التفاعل
+let mx=0, my=0, cx=0, cy=0, down=false, sx=0, st=0, moved=0, wheelT=0;
+const PULL = () => Math.max(150, W * 0.2);
+
+stage.addEventListener('pointerenter', e => { if(e.pointerType === 'mouse') ring.classList.add('show'); });
+stage.addEventListener('pointerleave', () => ring.classList.remove('show'));
+
+stage.addEventListener('pointermove', e => {
+  const r = stage.getBoundingClientRect();
+  mx = e.clientX - r.left; my = e.clientY - r.top;
+  if(!down) return;
+  const dx = e.clientX - sx;
+  moved = Math.max(moved, Math.abs(dx));
+  target = st + dx / PULL();
 });
-stage.addEventListener('pointerdown',e=>{
-  if(e.target.closest('a'))return;
-  down=true;sx=e.clientX;st=target;moved=0;stage.setPointerCapture(e.pointerId);ring.classList.add('drag');
+
+stage.addEventListener('pointerdown', e => {
+  if(e.target.closest('a')) return;
+  down = true; sx = e.clientX; st = target; moved = 0;
+  stage.setPointerCapture(e.pointerId); ring.classList.add('drag');
 });
+
 function release(e){
-  if(!down)return;down=false;ring.classList.remove('drag');
-  if(moved<6){
-    const hit=document.elementsFromPoint(e.clientX,e.clientY).find(x=>x.classList&&x.classList.contains('m'));
-    if(hit){let d=wrap(+hit.dataset.i-target,N);d=Math.round(d);if(d>0&&d<N)target=Math.round(target)+d}
-  }else target=Math.round(target);
+  if(!down) return; down = false; ring.classList.remove('drag');
+  if(moved < 6){
+    const hit = document.elementsFromPoint(e.clientX, e.clientY).find(x => x.classList && x.classList.contains('m'));
+    if(hit) {
+      let d = wrap(+hit.dataset.i - target, N); d = Math.round(d);
+      if(d > 0 && d < N) target = Math.round(target) + d;
+    }
+  } else {
+    target = Math.round(target);
+  }
 }
-stage.addEventListener('pointerup',release);stage.addEventListener('pointercancel',release);
-stage.addEventListener('wheel',e=>{
-  e.preventDefault();target+=clamp(e.deltaY+e.deltaX,-120,120)/420;
-  clearTimeout(wheelT);wheelT=setTimeout(()=>{target=Math.round(target)},150);
-},{passive:false});
-addEventListener('keydown',e=>{
-  if(['ArrowRight','ArrowDown'].includes(e.key)){e.preventDefault();target=Math.round(target)+1}
-  if(['ArrowLeft','ArrowUp'].includes(e.key)){e.preventDefault();target=Math.round(target)-1}
+
+stage.addEventListener('pointerup', release);
+stage.addEventListener('pointercancel', release);
+
+stage.addEventListener('wheel', e => {
+  e.preventDefault();
+  target += clamp(e.deltaY + e.deltaX, -120, 120) / 420;
+  clearTimeout(wheelT);
+  wheelT = setTimeout(() => { target = Math.round(target); }, 150);
+}, { passive: false });
+
+addEventListener('keydown', e => {
+  if(['ArrowRight','ArrowDown'].includes(e.key)) { e.preventDefault(); target = Math.round(target) + 1; }
+  if(['ArrowLeft','ArrowUp'].includes(e.key)) { e.preventDefault(); target = Math.round(target) - 1; }
 });
 
-function loop(t){frame(t);requestAnimationFrame(loop)}
-Promise.all([MODELS,MY_IMAGE].map(u=>{const i=new Image();i.src=u;return i.decode().catch(()=>{})})).then(()=>document.fonts.ready).then(()=>{
-  size();paint();$('wait').classList.add('gone');
-});
-size();requestAnimationFrame(loop);
+addEventListener('resize', size);
+setTimeout(() => { size(); paint(); $('wait').classList.add('gone'); }, 1000);
+size();
+requestAnimationFrame(frame);
 </script>
 </body>
 </html>
