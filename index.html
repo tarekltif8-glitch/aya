@@ -4,7 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>ALYASIMIN ABAYA</title>
-<meta name="description" content="عرض أزياء ثلاثي الأبعاد.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
@@ -31,12 +30,34 @@ main{position:relative;display:grid;grid-template-columns:1fr calc(372*var(--u))
   background:linear-gradient(transparent 60%,rgba(255,255,255,.72) 100%),linear-gradient(90deg,#f1f5fa 0%,#e7eff6 38%,#eef4f9 62%,#f6f9fc 100%)}
 .line{position:absolute;inset:0}
 
-/* ====== المانيكانات في العمق ====== */
+/* ====== تصميم المانيكان (جسم + عباية) ====== */
 .m{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform,filter;cursor:none; display:flex; align-items:flex-end; justify-content:center;}
-/* إخفاء المربع الأبيض من الصورة ليندمج مع الخلفية */
-.m img{display:block;width:100%;height:100%;object-fit:contain; mix-blend-mode: multiply; filter: drop-shadow(0 15px 15px rgba(0,0,0,0.15));}
+.m-inner {position:relative; width:100%; height:100%;}
+
+/* الصورة الأساسية (جسم العارضة) */
+.mannequin-base {
+  position: absolute; inset: 0; 
+  background-image: url('https://cdn.pixabay.com/photo/2016/11/29/13/14/attractive-1869761_1280.jpg'); /* صورة عارضة (مانيكان) للمحاكاة */
+  background-size: contain;
+  background-position: bottom center;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+
+/* صورة العباية التي تلبس فوق المانيكان */
+.m img.garment {
+  position:absolute; 
+  bottom: 0; left: 50%; 
+  transform: translateX(-50%);
+  width: 75%; /* تعديل العرض ليناسب جسم المانيكان */
+  height: auto;
+  object-fit: contain; 
+  mix-blend-mode: multiply; 
+  z-index: 2;
+}
+
 /* ظل أرضي للمانيكان */
-.m:before{content:"";position:absolute;left:10%;right:10%;bottom:-1.6%;height:3.6%;border-radius:50%;background:radial-gradient(closest-side,rgba(70,85,105,.2),transparent); z-index: -1;}
+.m:before{content:"";position:absolute;left:20%;right:20%;bottom:-1%;height:3%;border-radius:50%;background:radial-gradient(closest-side,rgba(70,85,105,.2),transparent); z-index: 0;}
 
 .intro{position:absolute;z-index:2;right:calc(46*var(--u));top:calc(36*var(--u));width:calc(390*var(--u));text-align:right;pointer-events:none}
 .intro h2{font-weight:600;font-size:calc(22*var(--u));line-height:1.2}
@@ -59,8 +80,9 @@ main{position:relative;display:grid;grid-template-columns:1fr calc(372*var(--u))
 .fav{position:absolute;right:calc(22*var(--u));top:calc(18*var(--u));width:calc(22*var(--u));height:calc(22*var(--u));z-index:1;color:var(--ink)}
 .fav svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.4;transition:fill .2s}
 .fav[aria-pressed=true] svg{fill:#d8a7a0;stroke:#b98179}
-.shot{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;}
-.shot img{max-width:100%;max-height:100%;object-fit:contain; mix-blend-mode: multiply; filter: drop-shadow(0 8px 8px rgba(0,0,0,0.1));}
+.shot{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;position:relative}
+.shot .card-base {position:absolute;inset:0;background-image: url('https://cdn.pixabay.com/photo/2016/11/29/13/14/attractive-1869761_1280.jpg');background-size:contain;background-position:bottom center;background-repeat:no-repeat;}
+.shot img{position:relative; z-index:2; width:75%; margin-top:auto; mix-blend-mode: multiply; filter: drop-shadow(0 8px 8px rgba(0,0,0,0.1));}
 .meta{display:grid;grid-template-columns:1fr auto;align-items:end;margin-top:calc(8*var(--u))}
 .meta h3{font-weight:600;font-size:calc(12*var(--u))}
 .meta span{display:block;grid-column:1;margin-top:calc(6*var(--u));font-size:calc(13*var(--u));color:var(--mid)}
@@ -127,11 +149,10 @@ main{position:relative;display:grid;grid-template-columns:1fr calc(372*var(--u))
 
 <script>
 // =======================================================
-// روابط الصور
+// رابط صورة العباية الخاصة بك
 // =======================================================
-const IMAGE_URL = 'https://cdn.arabsstock.com/uploads/images/98331/brown-gulf-abaya-with-luxurious-thumbnail-98331.webp';
+const GARMENT_URL = 'https://cdn.arabsstock.com/uploads/images/98331/brown-gulf-abaya-with-luxurious-thumbnail-98331.webp';
 
-// المنتجات الجانبية (تم تعديلها لتكون متوافقة مع التصميم)
 const ITEMS = [
   { name: 'عباية بنية فاخرة', price: '1,000 د.ل' },
   { name: 'حزام جلدي ذهبي', price: '250 د.ل' },
@@ -141,39 +162,51 @@ const ITEMS = [
   { name: 'إكسسوارات ذهبية', price: '300 د.ل' }
 ];
 
-// إعدادات العمق (وهي نفس أرقام الكود الأصلي لتعطي إحساس الممر)
 const KX=[1.2,.744,.496,.346,.235,.15,.085], KF=[1.14,.89,.777,.704,.651,.616,.59], KH=[1.18,.832,.574,.436,.334,.258,.19],
       KB=[0,0,1.5,4,8,12,17], KO=[1,1,1,1,.86,.5,0];
 
-const N = 6; // عدد المانيكانات
+const N = 6;
 const $ = id => document.getElementById(id);
 const wrap = (x,n) => ((x%n)+n)%n;
 const clamp = (x,a,b) => Math.min(b,Math.max(a,x));
 
 const stage=$('stage'), rail=$('rail'), ring=$('ring'), roll=$('roll'), line=$('line');
 
-// =======================================================
-// بناء المانيكانات في العمق
-// =======================================================
+// بناء المانيكانات في العرض الرئيسي
 const people = [];
 for(let i=0; i<N; i++) {
   const e = document.createElement('div'); e.className='m'; e.dataset.i=i;
+  
+  const inner = document.createElement('div');
+  inner.className = 'm-inner';
+  
+  // 1. جسم المانيكان
+  const base = document.createElement('div');
+  base.className = 'mannequin-base';
+  
+  // 2. العباية
   const img = document.createElement('img');
-  img.src = IMAGE_URL;
-  e.append(img);
+  img.className = 'garment';
+  img.src = GARMENT_URL;
+  
+  inner.append(base);
+  inner.append(img);
+  e.append(inner);
   line.append(e);
-  people.push({ e, r: 0.8, f:'', o:'' }); // r: نسبة العرض للطول
+  
+  people.push({ e, r: 0.6, f:'', o:'' }); 
 }
 
-// =======================================================
 // بناء القائمة الجانبية
-// =======================================================
 const cards = [];
 ITEMS.forEach((item, i) => {
   const e = document.createElement('article'); e.className = 'card' + (i%2?' alt':'');
   e.innerHTML = `
     <button class="fav" aria-pressed="false" aria-label="حفظ"><svg viewBox="0 0 24 24"><path d="M12 20S3.5 15 3.5 9A4.6 4.6 0 0 1 12 6.6 4.6 4.6 0 0 1 20.5 9C20.5 15 12 20 12 20Z"/></svg></button>
-    <span class="shot"><img src="${IMAGE_URL}"></span>
+    <span class="shot">
+       <div class="card-base"></div>
+       <img src="${GARMENT_URL}">
+    </span>
     <div class="meta">
       <h3 class="wide">${item.name}</h3>
       <span>${item.price}</span>
@@ -194,9 +227,7 @@ rail.addEventListener('click', e => {
   if(e.target.closest('.add')) $('cart').textContent = ++cart;
 });
 
-// =======================================================
-// محرك الحركة (Physics & Layout)
-// =======================================================
+// محرك الحركة
 let W=0, H=0, base=0, cardS=0, side=false, dirty=true, p=0, target=0, last=0;
 
 function size(){
@@ -204,9 +235,8 @@ function size(){
   base = H * 1.2;
   side = innerWidth <= 820;
   
-  // ضبط أبعاد المانيكانات بناءً على نسبة الصورة
   people.forEach(m => {
-    m.e.style.width = (base * 0.6) + 'px'; // عرض مناسب للصورة
+    m.e.style.width = (base * 0.6) + 'px';
     m.e.style.height = base + 'px';
   });
   
@@ -226,7 +256,7 @@ function paint(){
     
     const h = mix(KH) * H;
     const s = h / base;
-    const w = h * 0.6; // الحفاظ على نسبة عرض الصورة
+    const w = h * 0.6; 
     const x = mix(KX) * W - w/2;
     const y = mix(KF) * H - h;
     
@@ -265,9 +295,7 @@ function frame(now){
   requestAnimationFrame(frame);
 }
 
-// =======================================================
-// التفاعل (ماوس، لمس، عجلة)
-// =======================================================
+// التفاعل
 let mx=0, my=0, cx=0, cy=0, down=false, sx=0, st=0, moved=0, wheelT=0;
 const PULL = () => Math.max(150, W * 0.2);
 
@@ -317,21 +345,9 @@ addEventListener('keydown', e => {
   if(['ArrowLeft','ArrowUp'].includes(e.key)) { e.preventDefault(); target = Math.round(target) - 1; }
 });
 
-// =======================================================
-// التشغيل
-// =======================================================
 addEventListener('resize', size);
 
-// محاكاة تحميل الصورة لإخفاء شاشة الانتظار
-const tempImg = new Image();
-tempImg.src = IMAGE_URL;
-tempImg.onload = () => {
-  size();
-  paint();
-  $('wait').classList.add('gone');
-};
-// في حال تأخر التحميل، نبدأ بعد ثانيتين
-setTimeout(() => { size(); paint(); $('wait').classList.add('gone'); }, 2000);
+setTimeout(() => { size(); paint(); $('wait').classList.add('gone'); }, 1000);
 
 size();
 requestAnimationFrame(frame);
