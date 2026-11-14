@@ -39,7 +39,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 table{width:100%;border-collapse:collapse;font-size:12px}
 th,td{padding:10px 8px;border-bottom:1px solid var(--line);text-align:right;vertical-align:middle}
 th{background:#f3f6fa;font-weight:600;font-size:11px;position:sticky;top:0;z-index:1}
-td input,td select{width:100%;border:1px solid #dce2e9;padding:6px 8px;font:13px 'Tajawal',sans-serif;background:#fff;border-radius:4px;}
+td input,td select{width:100%;border:1px solid #dce2e9;padding:6px 8px;font:13px 'Tajawal',sans-serif;background:#fff;border-radius:4px;margin-bottom:4px;}
 .stock-cell{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
 .stock-cell input{text-align:center;padding:4px 2px;font-size:12px}
 .stock-cell .lbl{font-size:9px;color:var(--mid);text-align:center;margin-top:2px}
@@ -95,19 +95,20 @@ td input,td select{width:100%;border:1px solid #dce2e9;padding:6px 8px;font:13px
   <div class="tab-pane active" id="tab-products">
     <div class="card">
       <div style="margin-bottom:16px;padding:12px 14px;background:#f3f6fa;border-right:3px solid var(--warn);font-size:12px;color:#5a6172;line-height:1.8">
-        <strong>📸 إضافة صورة للمنتج:</strong>
-        1. اذهبي إلى موقع <a href="https://imgbb.com" target="_blank" style="color:blue;text-decoration:underline">ImgBB</a> وارفعي الصورة.<br>
-        2. انسخي <strong>الرابط المباشر (Direct Link / Doğrudan Bağlantı)</strong> للصورة (ينتهي بـ .jpg أو .png).<br>
-        3. الصقيه في مربع "رابط الصورة" بجانب المنتج هنا، ثم اضغطي "حفظ التغييرات".
+        <strong>📸 إضافة صور للمنتج (حتى 5 صور):</strong>
+        1. اذهبي إلى موقع <a href="https://imgbb.com" target="_blank" style="color:blue;text-decoration:underline">ImgBB</a> وارفعي الصور.<br>
+        2. انسخي <strong>الرابط المباشر (Direct Link)</strong> لكل صورة.<br>
+        3. الصقي الروابط في المربعات بجانب المنتج (يمكنك ترك المربعات الفارغة فارغة).<br>
+        4. اضغطي "حفظ التغييرات". العميل سيتنقل بين الصور في المعرض.
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
-        <div style="font-size:13px;color:var(--mid)">عدّلي الكميات والروابط ثم اضغطي حفظ — التغييرات تُحدَّث مباشرة.</div>
+        <div style="font-size:13px;color:var(--mid)">عدّلي الكميات والروابط ثم اضغطي حفظ.</div>
         <button class="btn primary" id="btn-save-products">💾 حفظ التغييرات</button>
       </div>
       <div class="table-wrap">
         <table>
           <thead><tr>
-            <th>#</th><th>الصورة</th><th>الاسم</th><th>السعر</th><th>الفئة</th>
+            <th>#</th><th>الصور (الرئيسية + إضافية)</th><th>الاسم</th><th>السعر</th><th>الفئة</th>
             <th style="min-width:220px">المخزون</th>
           </tr></thead>
           <tbody id="products-tbody"></tbody>
@@ -140,13 +141,11 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
 const ADMIN_USER = 'tarek';
 const ADMIN_PASS = '808909';
 const SIZES = ['S','M','L','XL'];
 
 const $ = (id) => document.getElementById(id);
-
 let PRODUCTS = [];
 let ORDERS = [];
 let listenersStarted = false;
@@ -154,41 +153,18 @@ let listenersStarted = false;
 const money = (n) => new Intl.NumberFormat('ar-LY', { style: 'currency', currency: 'LYD', maximumFractionDigits: 0 }).format(n) + ' د.ل';
 const escapeHtml = (s) => String(s || '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-function toast(msg) {
-  const el = $('toast');
-  el.textContent = msg;
-  el.classList.add('visible');
-  clearTimeout(toast._t);
-  toast._t = setTimeout(() => el.classList.remove('visible'), 2600);
-}
+function toast(msg) { const el = $('toast'); el.textContent = msg; el.classList.add('visible'); clearTimeout(toast._t); toast._t = setTimeout(() => el.classList.remove('visible'), 2600); }
 
 function tryLogin() {
-  const u = $('admin-user').value.trim();
-  const p = $('admin-pass').value;
-  if (u === ADMIN_USER && p === ADMIN_PASS) {
-    sessionStorage.setItem('alyasimin-admin', '1');
-    showApp();
-  } else {
-    $('admin-err').textContent = 'بيانات غير صحيحة';
-  }
+  if ($('admin-user').value.trim() === ADMIN_USER && $('admin-pass').value === ADMIN_PASS) {
+    sessionStorage.setItem('alyasimin-admin', '1'); showApp();
+  } else { $('admin-err').textContent = 'بيانات غير صحيحة'; }
 }
-function showApp() {
-  $('login-screen').style.display = 'none';
-  $('app').classList.add('open');
-  startListeners();
-}
-function startListeners() {
-  if (listenersStarted) return;
-  listenersStarted = true;
-  listenProducts();
-  listenOrders();
-}
+function showApp() { $('login-screen').style.display = 'none'; $('app').classList.add('open'); startListeners(); }
+function startListeners() { if (listenersStarted) return; listenersStarted = true; listenProducts(); listenOrders(); }
 $('admin-login-btn').addEventListener('click', tryLogin);
 $('admin-pass').addEventListener('keydown', (e) => { if (e.key === 'Enter') tryLogin(); });
-$('btn-logout').addEventListener('click', () => {
-  sessionStorage.removeItem('alyasimin-admin');
-  location.reload();
-});
+$('btn-logout').addEventListener('click', () => { sessionStorage.removeItem('alyasimin-admin'); location.reload(); });
 
 document.querySelectorAll('[data-tab]').forEach((btn) => {
   btn.addEventListener('click', () => {
@@ -199,12 +175,10 @@ document.querySelectorAll('[data-tab]').forEach((btn) => {
 
 function listenProducts() {
   onSnapshot(collection(db, 'products'), (snap) => {
-    PRODUCTS = snap.docs
-      .map((d) => {
-        const data = d.data();
-        return { id: d.id, ...data, stock: data.stock || { S: 0, M: 0, L: 0, XL: 0 } };
-      })
-      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+    PRODUCTS = snap.docs.map((d) => {
+      const data = d.data();
+      return { id: d.id, ...data, stock: data.stock || { S: 0, M: 0, L: 0, XL: 0 } };
+    }).sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
     renderProducts();
   });
 }
@@ -212,10 +186,7 @@ function listenProducts() {
 function renderProducts() {
   const tbody = $('products-tbody');
   if (!tbody) return;
-  if (!PRODUCTS.length) {
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:#737b86">لا توجد منتجات.</td></tr>';
-    return;
-  }
+  if (!PRODUCTS.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:#737b86">لا توجد منتجات.</td></tr>'; return; }
 
   tbody.innerHTML = PRODUCTS.map((p, i) => {
     const stockCells = SIZES.map((s) => {
@@ -223,21 +194,25 @@ function renderProducts() {
       return '<div><input data-stock="' + s + '" type="number" min="0" value="' + val + '"><div class="lbl">' + s + '</div></div>';
     }).join('');
 
-    const catOptions = ['عبايات', 'معاطف', 'ملابس', 'تنانير', 'إكسسوارات']
-      .map((c) => '<option ' + (c === p.category ? 'selected' : '') + '>' + c + '</option>')
-      .join('');
+    const catOptions = ['عبايات', 'معاطف', 'ملابس', 'تنانير', 'إكسسوارات'].map((c) => '<option ' + (c === p.category ? 'selected' : '') + '>' + c + '</option>').join('');
+
+    // حقول الصور الخمسة
+    let imgInputs = '';
+    for(let j=1; j<=5; j++) {
+      const field = j===1 ? 'imageUrl' : 'imageUrl'+j;
+      const val = p[field] || '';
+      imgInputs += `<input data-field="${field}" value="${escapeHtml(val)}" placeholder="رابط الصورة ${j}" style="font-size:10px;direction:ltr;text-align:left;margin-bottom:2px;">`;
+    }
 
     const hasImg = p.imageUrl && p.imageUrl.length > 5;
-    const thumbHtml = hasImg
-      ? '<div class="img-thumb" style="background-image:url(\'' + escapeHtml(p.imageUrl) + '\')"></div>'
-      : '<div class="img-thumb empty">بلا صورة</div>';
+    const thumbHtml = hasImg ? '<div class="img-thumb" style="background-image:url(\'' + escapeHtml(p.imageUrl) + '\')"></div>' : '<div class="img-thumb empty">بلا صورة</div>';
 
     return `
       <tr data-id="${p.id}">
         <td>${i + 1}</td>
-        <td style="width:160px">
+        <td style="width:220px">
           ${thumbHtml}
-          <input data-field="imageUrl" value="${escapeHtml(p.imageUrl || '')}" placeholder="ألصقي رابط الصورة هنا" style="font-size:10px;direction:ltr;text-align:left;">
+          ${imgInputs}
         </td>
         <td><input data-field="name" value="${escapeHtml(p.name)}"></td>
         <td><input data-field="price" type="number" min="0" step="1" value="${p.price}" style="width:90px"></td>
@@ -248,76 +223,58 @@ function renderProducts() {
 }
 
 $('btn-save-products').addEventListener('click', async () => {
-  const btn = $('btn-save-products');
-  btn.disabled = true;
-  btn.textContent = 'جارٍ الحفظ...';
+  const btn = $('btn-save-products'); btn.disabled = true; btn.textContent = 'جارٍ الحفظ...';
   try {
     const rows = $('products-tbody').querySelectorAll('tr[data-id]');
     for (const tr of rows) {
       const id = tr.dataset.id;
-      const name = tr.querySelector('[data-field="name"]').value.trim();
-      const price = Math.max(0, Number(tr.querySelector('[data-field="price"]').value) || 0);
-      const category = tr.querySelector('[data-field="category"]').value;
-      const imageUrl = tr.querySelector('[data-field="imageUrl"]').value.trim();
+      const updates = {
+        name: tr.querySelector('[data-field="name"]').value.trim(),
+        price: Math.max(0, Number(tr.querySelector('[data-field="price"]').value) || 0),
+        category: tr.querySelector('[data-field="category"]').value,
+        stock: {}
+      };
       
-      const stock = {};
+      for(let j=1; j<=5; j++) {
+        const field = j===1 ? 'imageUrl' : 'imageUrl'+j;
+        updates[field] = tr.querySelector(`[data-field="${field}"]`).value.trim();
+      }
+
       SIZES.forEach((s) => {
-        stock[s] = Math.max(0, Number(tr.querySelector('[data-stock="' + s + '"]').value) || 0);
+        updates.stock[s] = Math.max(0, Number(tr.querySelector('[data-stock="' + s + '"]').value) || 0);
       });
       
-      await updateDoc(doc(db, 'products', id), { name, price, category, imageUrl, stock });
+      await updateDoc(doc(db, 'products', id), updates);
     }
     toast('✓ تم حفظ التغييرات');
-  } catch (e) {
-    console.error(e);
-    toast('خطأ: ' + e.message);
-  } finally {
-    btn.disabled = false;
-    btn.textContent = '💾 حفظ التغييرات';
-  }
+  } catch (e) { console.error(e); toast('خطأ: ' + e.message); } 
+  finally { btn.disabled = false; btn.textContent = '💾 حفظ التغييرات'; }
 });
 
 function listenOrders() {
   onSnapshot(collection(db, 'orders'), (snap) => {
-    ORDERS = snap.docs
-      .map((d) => ({ id: d.id, ...d.data() }))
-      .sort((a, b) => {
-        const ta = a.createdAt?.toMillis?.() || 0;
-        const tb = b.createdAt?.toMillis?.() || 0;
-        return tb - ta;
-      });
+    ORDERS = snap.docs.map((d) => ({ id: d.id, ...d.data() })).sort((a, b) => {
+      const ta = a.createdAt?.toMillis?.() || 0; const tb = b.createdAt?.toMillis?.() || 0; return tb - ta;
+    });
     const pending = ORDERS.filter((o) => (o.status || 'pending') === 'pending').length;
     $('orders-count').textContent = ORDERS.length;
-    const tabBtn = $('tab-orders-btn');
-    if (tabBtn) tabBtn.classList.toggle('has-pending', pending > 0);
+    const tabBtn = $('tab-orders-btn'); if (tabBtn) tabBtn.classList.toggle('has-pending', pending > 0);
     renderOrders();
   });
 }
 
 function renderOrders() {
   const container = $('orders-list');
-  if (!container) return;
-  if (!ORDERS.length) {
-    container.innerHTML = '<div class="empty">لا توجد طلبات بعد.</div>';
-    return;
-  }
+  if (!ORDERS.length) { container.innerHTML = '<div class="empty">لا توجد طلبات بعد.</div>'; return; }
   container.innerHTML = ORDERS.map((o) => {
     const st = o.status || 'pending';
     const stLabel = st === 'pending' ? '⏳ قيد المراجعة' : st === 'approved' ? '✓ مقبول' : '✕ مرفوض';
     const date = o.createdAt?.toDate?.()?.toLocaleString('ar-LY') || '—';
-    
-    const itemsHtml = (o.items || []).map((it) => {
-      return '<div>• <strong>' + escapeHtml(it.name) + '</strong> — مقاس ' + escapeHtml(it.size) + ' — الكمية ' + it.qty + ' — ' + money(it.price * it.qty) + '</div>';
-    }).join('');
-    
+    const itemsHtml = (o.items || []).map((it) => '<div>• <strong>' + escapeHtml(it.name) + '</strong> — مقاس ' + escapeHtml(it.size) + ' — الكمية ' + it.qty + ' — ' + money(it.price * it.qty) + '</div>').join('');
     let actionsHtml = '';
     if (st === 'pending') {
-      actionsHtml = '<div class="order-actions">' +
-          '<button class="btn ok" data-approve="' + o.id + '">✓ موافقة (خصم من المخزون)</button>' +
-          '<button class="btn danger" data-reject="' + o.id + '">✕ رفض (بدون خصم)</button>' +
-        '</div>';
+      actionsHtml = '<div class="order-actions"><button class="btn ok" data-approve="' + o.id + '">✓ موافقة (خصم من المخزون)</button><button class="btn danger" data-reject="' + o.id + '">✕ رفض (بدون خصم)</button></div>';
     }
-
     return `
       <div class="order ${st}">
         <div class="order-head">
@@ -339,7 +296,6 @@ function renderOrders() {
         ${actionsHtml}
       </div>`;
   }).join('');
-
   container.querySelectorAll('[data-approve]').forEach((btn) => btn.addEventListener('click', () => approveOrder(btn.dataset.approve)));
   container.querySelectorAll('[data-reject]').forEach((btn) => btn.addEventListener('click', () => rejectOrder(btn.dataset.reject)));
 }
@@ -364,10 +320,7 @@ async function approveOrder(orderId) {
     }
     await updateDoc(doc(db, 'orders', orderId), { status: 'approved', approvedAt: serverTimestamp() });
     toast('✓ تم قبول الطلب');
-  } catch (e) {
-    console.error(e);
-    toast('فشل: ' + e.message);
-  }
+  } catch (e) { console.error(e); toast('فشل: ' + e.message); }
 }
 
 async function rejectOrder(orderId) {
@@ -377,9 +330,7 @@ async function rejectOrder(orderId) {
   try {
     await updateDoc(doc(db, 'orders', orderId), { status: 'rejected', rejectedAt: serverTimestamp() });
     toast('تم الرفض — المخزون لم يتغير');
-  } catch (e) {
-    toast('فشل: ' + e.message);
-  }
+  } catch (e) { toast('فشل: ' + e.message); }
 }
 
 if (sessionStorage.getItem('alyasimin-admin') === '1') showApp();
