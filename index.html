@@ -25,15 +25,8 @@ header{position:relative;z-index:5;background:#fff;padding:calc(18*var(--u)) cal
 main{position:relative;display:grid;grid-template-columns:1fr calc(372*var(--u));min-height:0}
 .stage{position:relative;overflow:hidden;touch-action:pan-y;user-select:none;cursor:none;background:linear-gradient(transparent 60%,rgba(255,255,255,.72) 100%),linear-gradient(90deg,#f1f5fa 0%,#e7eff6 38%,#eef4f9 62%,#f6f9fc 100%)}
 .line{position:absolute;inset:0}
-
-/* ====== تنسيق المانيكان ====== */
-.m{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform,filter;cursor:none;display:flex;justify-content:center;align-items:flex-end;}
-.m-inner{position:relative;width:100%;height:100%;display:flex;justify-content:center;align-items:flex-end;}
-/* شبح المانيكان الخلفي */
-.mannequin-bg {position:absolute; bottom:0; left:50%; transform:translateX(-50%); width: 40%; height: 85%; background: linear-gradient(to top, #e2e8f0 0%, #f8fafc 60%, transparent 100%); border-radius: 50% 50% 10% 10% / 20% 20% 5% 5%; z-index: 1; box-shadow: inset 0 -20px 30px rgba(0,0,0,0.05);}
-/* الصورة نفسها */
-.m img{position:relative; z-index: 2; display:block; max-width:100%; max-height:100%; object-fit:contain; filter: drop-shadow(0 20px 15px rgba(0,0,0,0.15));}
-
+.m{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform,filter;cursor:none;}
+.m img{display:block;width:100%;height:100%;object-fit:contain; mix-blend-mode: multiply; filter: drop-shadow(0 15px 15px rgba(0,0,0,0.15));}
 .intro{position:absolute;z-index:2;right:calc(46*var(--u));top:calc(36*var(--u));width:calc(390*var(--u));text-align:right}
 .intro h2{font-weight:600;font-size:calc(22*var(--u))}
 .intro p{margin-top:calc(14*var(--u));font-size:calc(14*var(--u));line-height:1.75;color:var(--mid)}
@@ -51,12 +44,8 @@ main{position:relative;display:grid;grid-template-columns:1fr calc(372*var(--u))
 .fav{position:absolute;right:calc(20*var(--u));top:calc(16*var(--u));z-index:1}
 .fav svg{width:calc(20*var(--u));height:calc(20*var(--u));fill:none;stroke:currentColor;stroke-width:1.4}
 .fav[aria-pressed=true] svg{fill:#d8a7a0;stroke:#b98179}
-
-/* ====== تنسيق الصورة في القائمة الجانبية ====== */
-.shot{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden;}
-.shot .shot-bg {position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:50%;height:80%;background:linear-gradient(to top, #e2e8f0 0%, #f8fafc 60%, transparent 100%);border-radius:50% 50% 10% 10% / 20% 20% 5% 5%;z-index:1;}
-.shot img{position:relative; z-index:2; max-width:100%;max-height:100%;object-fit:contain;filter: drop-shadow(0 10px 8px rgba(0,0,0,0.1));}
-
+.shot{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;}
+.shot img{max-width:100%;max-height:100%;object-fit:contain; mix-blend-mode: multiply; filter: drop-shadow(0 8px 8px rgba(0,0,0,0.1));}
 .meta{display:grid;grid-template-columns:1fr auto;align-items:end;margin-top:calc(8*var(--u))}
 .meta h3{font-weight:600;font-size:calc(12*var(--u))}
 .meta span{display:block;grid-column:1;margin-top:calc(5*var(--u));font-size:calc(13*var(--u));color:var(--mid)}
@@ -90,7 +79,7 @@ main{position:relative;display:grid;grid-template-columns:1fr calc(372*var(--u))
 .panel-title{font-size:19px;font-weight:600;line-height:1.5;margin-bottom:14px}
 .panel-copy{font-size:14px;line-height:1.9;color:var(--mid);margin-bottom:20px}
 .panel-image{height:260px;display:flex;align-items:center;justify-content:center;background:#f3f6fa;margin-bottom:22px;padding:22px;overflow:hidden;}
-.panel-image img{max-width:100%;max-height:100%;object-fit:contain;}
+.panel-image img{max-width:100%;max-height:100%;object-fit:contain; mix-blend-mode: multiply;}
 .product-price{font-size:17px;color:var(--mid);margin-bottom:22px;font-weight:600}
 .field-label{display:block;font-size:12px;margin:18px 0 8px;font-weight:600}
 .sizes{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
@@ -110,8 +99,7 @@ main{position:relative;display:grid;grid-template-columns:1fr calc(372*var(--u))
 .catalog-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px 16px;margin-top:22px}
 .catalog-piece{position:relative;min-width:0}
 .catalog-photo{width:100%;height:220px;background:#f3f6fa;padding:22px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
-.catalog-photo .shot-bg {position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:50%;height:80%;background:linear-gradient(to top, #e2e8f0 0%, #f8fafc 60%, transparent 100%);border-radius:50% 50% 10% 10% / 20% 20% 5% 5%;z-index:1;}
-.catalog-photo img{position:relative; z-index:2; max-width:100%;max-height:100%;object-fit:contain;filter: drop-shadow(0 10px 8px rgba(0,0,0,0.1));}
+.catalog-photo img{max-width:100%;max-height:100%;object-fit:contain; mix-blend-mode: multiply;}
 .catalog-piece h3{font-size:12px;margin-top:12px;font-weight:600}
 .catalog-piece p{font-size:13px;color:var(--mid);margin-top:6px}
 .catalog-save{position:absolute;left:10px;top:10px;background:#ffffffb0;width:30px;height:30px;border-radius:50%;font-size:20px;z-index:2;}
@@ -122,8 +110,7 @@ main{position:relative;display:grid;grid-template-columns:1fr calc(372*var(--u))
 .empty p{font-size:14px;color:var(--mid);line-height:1.9;margin-bottom:20px}
 .cart-row{display:grid;grid-template-columns:90px 1fr;gap:16px;border-bottom:1px solid var(--line);padding-bottom:20px;margin-bottom:20px}
 .cart-shot{height:110px;background:#f3f6fa;padding:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
-.cart-shot .shot-bg {position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:50%;height:80%;background:linear-gradient(to top, #e2e8f0 0%, #f8fafc 60%, transparent 100%);border-radius:50% 50% 10% 10% / 20% 20% 5% 5%;z-index:1;}
-.cart-shot img{position:relative; z-index:2; max-width:100%;max-height:100%;object-fit:contain;}
+.cart-shot img{max-width:100%;max-height:100%;object-fit:contain; mix-blend-mode: multiply;}
 .cart-row h3{font-size:12px;font-weight:600}
 .cart-row .row-price{color:var(--mid);font-size:14px;margin:6px 0 10px}
 .cart-row select{font-size:12px;border:1px solid #dce2e9;background:#fff;padding:5px 8px;font-family:inherit}
@@ -249,29 +236,14 @@ function listenProducts(){
 const stage=$('stage'), rail=$('rail'), ring=$('ring'), roll=$('roll'), line=$('line');
 let people = [];
 
-// إنشاء العنصر المتحرك في الخلفية (المانيكان)
 function buildPeople(){
   line.innerHTML = '';
   people = [];
   for(let i=0; i<N; i++) {
     const e = document.createElement('div'); e.className='m'; e.dataset.i=i;
-    
-    // حاوية داخلية للمانيكان
-    const inner = document.createElement('div');
-    inner.className = 'm-inner';
-    
-    // شبح المانيكان
-    const bg = document.createElement('div');
-    bg.className = 'mannequin-bg';
-    
-    // الصورة
     const img = document.createElement('img');
     img.src = (PRODUCTS[i] && PRODUCTS[i].imageUrl) ? PRODUCTS[i].imageUrl : FALLBACK_IMAGE;
-    
-    inner.appendChild(bg);
-    inner.appendChild(img);
-    e.appendChild(inner);
-    
+    e.append(img);
     line.append(e);
     people.push({ e, r:0.8, f:'', o:'' });
   }
@@ -280,7 +252,6 @@ function buildPeople(){
 }
 
 const cards = [];
-// إنشاء الكروت الجانبية
 function buildCards(){
   rail.innerHTML=''; cards.length=0;
   PRODUCTS.forEach((p,i)=>{
@@ -294,14 +265,9 @@ function buildCards(){
         <button class="add" aria-label="أضيفي"></button>
       </div>`;
     
-    // إضافة المانيكان للقائمة الجانبية
-    const shot = e.querySelector('.shot');
-    const shotBg = document.createElement('div');
-    shotBg.className = 'shot-bg';
     const img = document.createElement('img');
     img.src = p.imageUrl || FALLBACK_IMAGE;
-    shot.appendChild(shotBg);
-    shot.appendChild(img);
+    e.querySelector('.shot').append(img);
     
     rail.append(e); cards.push(e);
   });
@@ -408,11 +374,10 @@ function panel(title,wide=false){
   panelBody.scrollTop = 0;
 }
 
-// دالة لجلب صورة المنتج مع المانيكان
 function getProductImageHTML(id) {
   const p = PRODUCTS.find(x=>x.id===id);
   const url = (p && p.imageUrl) ? p.imageUrl : FALLBACK_IMAGE;
-  return `<div class="shot-bg"></div><img src="${url}" alt="${p ? p.name : ''}">`;
+  return `<img src="${url}" alt="${p ? p.name : ''}">`;
 }
 
 function appendImages(){
