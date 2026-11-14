@@ -12,18 +12,18 @@ body{font-family:'Tajawal',system-ui,sans-serif;color:var(--ink);background:#f3f
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .wide{font-family:'Cairo',sans-serif;font-weight:600}
 .login-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#16191f;padding:20px;z-index:50}
-.login-box{background:#fff;width:min(400px,100%);padding:36px 30px;text-align:center}
+.login-box{background:#fff;width:min(400px,100%);padding:36px 30px;text-align:center;border-radius:8px;}
 .login-box h1{font-size:20px;font-weight:600;margin-bottom:6px}
 .login-box p{font-size:13px;color:var(--mid);margin-bottom:24px}
-.login-box input{width:100%;padding:12px;border:1px solid #dce2e9;font:14px 'Tajawal',sans-serif;margin-bottom:12px;text-align:center}
+.login-box input{width:100%;padding:12px;border:1px solid #dce2e9;font:14px 'Tajawal',sans-serif;margin-bottom:12px;text-align:center;border-radius:4px;}
 .login-box .err{color:var(--err);font-size:12px;min-height:18px;margin-bottom:8px}
-.login-box button{width:100%;background:var(--ink);color:#fff;padding:14px;font-size:13px;font-weight:600}
+.login-box button{width:100%;background:var(--ink);color:#fff;padding:14px;font-size:13px;font-weight:600;border-radius:4px;}
 .app{display:none;max-width:1240px;margin:0 auto;padding:24px 20px}
 .app.open{display:block}
 .app-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px}
 .app-head h1{font-size:20px;font-weight:600}
 .app-head .actions{display:flex;gap:8px}
-.btn{padding:10px 18px;font-size:12px;font-weight:600;border:1px solid #dce2e9;background:#fff;border-radius:2px}
+.btn{padding:10px 18px;font-size:12px;font-weight:600;border:1px solid #dce2e9;background:#fff;border-radius:4px;}
 .btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
 .btn.danger{color:var(--err);border-color:var(--err)}
 .btn.ok{background:var(--ok);color:#fff;border-color:var(--ok)}
@@ -34,18 +34,18 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .tabs-admin button.has-pending{color:var(--warn)}
 .tab-pane{display:none}
 .tab-pane.active{display:block}
-.card{background:#fff;padding:20px;margin-bottom:16px;border-radius:3px}
+.card{background:#fff;padding:20px;margin-bottom:16px;border-radius:4px;box-shadow:0 2px 10px rgba(0,0,0,0.02);}
 .table-wrap{overflow:auto}
 table{width:100%;border-collapse:collapse;font-size:12px}
 th,td{padding:10px 8px;border-bottom:1px solid var(--line);text-align:right;vertical-align:middle}
 th{background:#f3f6fa;font-weight:600;font-size:11px;position:sticky;top:0;z-index:1}
-td input,td select{width:100%;border:1px solid #dce2e9;padding:6px 8px;font:13px 'Tajawal',sans-serif;background:#fff}
-.stock-cell{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+td input,td select{width:100%;border:1px solid #dce2e9;padding:6px 8px;font:13px 'Tajawal',sans-serif;background:#fff;border-radius:4px;}
+.stock-cell{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
 .stock-cell input{text-align:center;padding:4px 2px;font-size:12px}
 .stock-cell .lbl{font-size:9px;color:var(--mid);text-align:center;margin-top:2px}
-.img-thumb{width:56px;height:56px;border:1px solid var(--line);background:#f3f6fa;background-size:cover;background-position:center;border-radius:2px;margin-bottom:6px}
+.img-thumb{width:56px;height:56px;border:1px solid var(--line);background:#f3f6fa;background-size:cover;background-position:center;border-radius:4px;margin-bottom:6px}
 .img-thumb.empty{display:flex;align-items:center;justify-content:center;color:#a4adb8;font-size:10px}
-.order{background:#fff;padding:18px 20px;margin-bottom:12px;border-right:3px solid var(--line);border-radius:3px}
+.order{background:#fff;padding:18px 20px;margin-bottom:12px;border-right:3px solid var(--line);border-radius:4px;}
 .order.pending{border-right-color:#f39c12}
 .order.approved{border-right-color:var(--ok)}
 .order.rejected{border-right-color:var(--err)}
@@ -61,7 +61,7 @@ td input,td select{width:100%;border:1px solid #dce2e9;padding:6px 8px;font:13px
 .order-total{font-size:15px;font-weight:600;margin:8px 0}
 .order-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
 .empty{padding:50px;text-align:center;color:var(--mid);font-size:14px}
-.toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,15px);background:var(--ink);color:#fff;padding:12px 22px;font-size:13px;opacity:0;transition:.2s;pointer-events:none;z-index:100;border-radius:2px}
+.toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,15px);background:var(--ink);color:#fff;padding:12px 22px;font-size:13px;opacity:0;transition:.2s;pointer-events:none;z-index:100;border-radius:4px;}
 .toast.visible{opacity:1;transform:translate(-50%,0)}
 </style>
 </head>
@@ -97,7 +97,7 @@ td input,td select{width:100%;border:1px solid #dce2e9;padding:6px 8px;font:13px
       <div style="margin-bottom:16px;padding:12px 14px;background:#f3f6fa;border-right:3px solid var(--warn);font-size:12px;color:#5a6172;line-height:1.8">
         <strong>📸 إضافة صورة للمنتج:</strong>
         1. اذهبي إلى موقع <a href="https://imgbb.com" target="_blank" style="color:blue;text-decoration:underline">ImgBB</a> وارفعي الصورة.<br>
-        2. انسخي <strong>الرابط المباشر (Direct Link)</strong> للصورة (ينتهي بـ .jpg أو .png).<br>
+        2. انسخي <strong>الرابط المباشر (Direct Link / Doğrudan Bağlantı)</strong> للصورة (ينتهي بـ .jpg أو .png).<br>
         3. الصقيه في مربع "رابط الصورة" بجانب المنتج هنا، ثم اضغطي "حفظ التغييرات".
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
@@ -109,7 +109,6 @@ td input,td select{width:100%;border:1px solid #dce2e9;padding:6px 8px;font:13px
           <thead><tr>
             <th>#</th><th>الصورة</th><th>الاسم</th><th>السعر</th><th>الفئة</th>
             <th style="min-width:220px">المخزون</th>
-            <th>الإطلالة</th>
           </tr></thead>
           <tbody id="products-tbody"></tbody>
         </table>
@@ -144,7 +143,7 @@ const db = getFirestore(app);
 
 const ADMIN_USER = 'tarek';
 const ADMIN_PASS = '808909';
-const SIZES = ['XS','S','M','L','XL'];
+const SIZES = ['S','M','L','XL'];
 
 const $ = (id) => document.getElementById(id);
 
@@ -163,7 +162,6 @@ function toast(msg) {
   toast._t = setTimeout(() => el.classList.remove('visible'), 2600);
 }
 
-/* ====== Login ====== */
 function tryLogin() {
   const u = $('admin-user').value.trim();
   const p = $('admin-pass').value;
@@ -192,7 +190,6 @@ $('btn-logout').addEventListener('click', () => {
   location.reload();
 });
 
-/* ====== Tabs ====== */
 document.querySelectorAll('[data-tab]').forEach((btn) => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('[data-tab]').forEach((b) => b.classList.toggle('active', b === btn));
@@ -200,17 +197,12 @@ document.querySelectorAll('[data-tab]').forEach((btn) => {
   });
 });
 
-/* ====== Products ====== */
 function listenProducts() {
   onSnapshot(collection(db, 'products'), (snap) => {
     PRODUCTS = snap.docs
       .map((d) => {
         const data = d.data();
-        return {
-          id: d.id,
-          ...data,
-          stock: data.stock || { XS: 0, S: 0, M: 0, L: 0, XL: 0 }
-        };
+        return { id: d.id, ...data, stock: data.stock || { S: 0, M: 0, L: 0, XL: 0 } };
       })
       .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
     renderProducts();
@@ -221,7 +213,7 @@ function renderProducts() {
   const tbody = $('products-tbody');
   if (!tbody) return;
   if (!PRODUCTS.length) {
-    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:#737b86">لا توجد منتجات.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:#737b86">لا توجد منتجات.</td></tr>';
     return;
   }
 
@@ -251,7 +243,6 @@ function renderProducts() {
         <td><input data-field="price" type="number" min="0" step="1" value="${p.price}" style="width:90px"></td>
         <td><select data-field="category">${catOptions}</select></td>
         <td><div class="stock-cell">${stockCells}</div></td>
-        <td><input data-field="look" type="number" min="1" value="${(p.look || 0) + 1}" style="width:60px"></td>
       </tr>`;
   }).join('');
 }
@@ -268,15 +259,13 @@ $('btn-save-products').addEventListener('click', async () => {
       const price = Math.max(0, Number(tr.querySelector('[data-field="price"]').value) || 0);
       const category = tr.querySelector('[data-field="category"]').value;
       const imageUrl = tr.querySelector('[data-field="imageUrl"]').value.trim();
-      const lookInput = Number(tr.querySelector('[data-field="look"]').value) || 1;
-      const look = Math.max(0, lookInput - 1);
       
       const stock = {};
       SIZES.forEach((s) => {
         stock[s] = Math.max(0, Number(tr.querySelector('[data-stock="' + s + '"]').value) || 0);
       });
       
-      await updateDoc(doc(db, 'products', id), { name, price, category, imageUrl, stock, look });
+      await updateDoc(doc(db, 'products', id), { name, price, category, imageUrl, stock });
     }
     toast('✓ تم حفظ التغييرات');
   } catch (e) {
@@ -288,7 +277,6 @@ $('btn-save-products').addEventListener('click', async () => {
   }
 });
 
-/* ====== Orders ====== */
 function listenOrders() {
   onSnapshot(collection(db, 'orders'), (snap) => {
     ORDERS = snap.docs
@@ -337,7 +325,8 @@ function renderOrders() {
             <h3>👤 ${escapeHtml(o.customer?.name || '—')}</h3>
             <div class="meta">
               📞 ${escapeHtml(o.customer?.phone || '—')}<br>
-              📍 ${escapeHtml(o.customer?.city || '—')} - ${escapeHtml(o.customer?.address || '—')}
+              📍 ${escapeHtml(o.customer?.city || '—')} - ${escapeHtml(o.customer?.address || '—')}<br>
+              📝 ${escapeHtml(o.customer?.note || 'لا يوجد ملاحظات')}
             </div>
           </div>
           <div style="text-align:left">
@@ -393,7 +382,6 @@ async function rejectOrder(orderId) {
   }
 }
 
-/* ====== Boot ====== */
 if (sessionStorage.getItem('alyasimin-admin') === '1') showApp();
 else $('admin-user').focus();
 </script>
