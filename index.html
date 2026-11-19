@@ -208,6 +208,7 @@ const TG_CHAT_ID = '8562530371';
 const SIZES = ['S','M','L','XL'];
 
 let PRODUCTS = [];
+let STORE_CATEGORIES = [];
 let FILTERED_PRODUCTS = [];
 let CART = [];
 let CURRENT_QV_PRODUCT = null;
@@ -285,6 +286,14 @@ function loadProducts() {
   });
 }
 
+function loadStoreCategories() {
+  onSnapshot(collection(db, 'categories'), snap => {
+    STORE_CATEGORIES = snap.docs.map(d => d.data().name).filter(Boolean);
+    renderFilters();
+    renderCategoryShowcase();
+  }, error => console.warn('تعذر تحميل قائمة الأصناف؛ سيتم استخدام أصناف المنتجات الحالية.', error));
+}
+
 function renderFilters() {
   const cats = ['الكل', ...new Set(PRODUCTS.map(p => p.category).filter(Boolean))];
   $('filters').innerHTML = cats.map(c => `<button class="filter-btn wide ${c === CURRENT_CATEGORY ? 'active' : ''}" data-cat="${c}">${c}</button>`).join('');
@@ -310,7 +319,7 @@ function renderGrid() {
 
 function renderCategoryShowcase() {
   const grid = $('category-grid');
-  const categories = ['الكل', ...new Set(PRODUCTS.map(p => p.category).filter(Boolean))];
+  const categories = ['الكل', ...new Set([...STORE_CATEGORIES, ...PRODUCTS.map(p => p.category).filter(Boolean)])];
   grid.innerHTML = categories.map((category, index) => {
     const matching = category === 'الكل' ? PRODUCTS : PRODUCTS.filter(p => p.category === category);
     const representative = matching.find(p => p.allImages?.[0]);
@@ -457,6 +466,30 @@ function animateProductToCart(source, product) {
   });
 }
 
+let cartAudioContext = null;
+function playCartChime() {
+  try {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return;
+    if (!cartAudioContext) cartAudioContext = new AudioContextClass();
+    if (cartAudioContext.state === 'suspended') cartAudioContext.resume().catch(() => {});
+    const start = cartAudioContext.currentTime + 0.015;
+    [[659.25, 0], [880, 0.075]].forEach(([frequency, offset]) => {
+      const oscillator = cartAudioContext.createOscillator();
+      const volume = cartAudioContext.createGain();
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(frequency, start + offset);
+      volume.gain.setValueAtTime(0.0001, start + offset);
+      volume.gain.exponentialRampToValueAtTime(0.022, start + offset + 0.012);
+      volume.gain.exponentialRampToValueAtTime(0.0001, start + offset + 0.19);
+      oscillator.connect(volume);
+      volume.connect(cartAudioContext.destination);
+      oscillator.start(start + offset);
+      oscillator.stop(start + offset + 0.2);
+    });
+  } catch (_) { /* تجاهل عدم دعم الصوت دون التأثير على إضافة المنتج */ }
+}
+
 function addToCart(id, size, source) {
   const p = PRODUCTS.find(x => x.id === id);
   if (!p) return;
@@ -466,6 +499,7 @@ function addToCart(id, size, source) {
     existing.qty++;
   } else { CART.push({ id, size, qty: 1 }); }
   saveCart();
+  playCartChime();
   showToast('أُضيف المنتج إلى سلتك');
   animateProductToCart(source, p).then(openCart);
 }
@@ -547,6 +581,7 @@ $('checkout-form').onsubmit = async (e) => {
 };
 
 loadProducts();
+loadStoreCategories();
 updateCartUI();
 </script>
 </body>
